@@ -40,17 +40,17 @@ void ViewerEtudiant::init_cube()
 void ViewerEtudiant::init_cone()
 {
     // Variation de l’angle de 0 à 2𝝿
-const int div = 25;
-float alpha;
-float step = 2.0 * M_PI / (div);
-// Choix de la primitive OpenGL
-m_cone = Mesh(GL_TRIANGLE_STRIP);
-for (int i=0;i<=div;++i) {
-alpha = i * step; // Angle varie de 0 à 2𝝿
-m_cone.normal(Vector(cos(alpha)/sqrtf(2.f), 0, sin(alpha)/sqrtf(2.f)));
-m_cone.vertex(Point(cos(alpha), 0, sin(alpha)));
-m_cone.normal(Vector(cos(alpha)/sqrtf(2.f), 1.f/sqrtf(2.f), sin(alpha)/sqrtf(2.f)));
-m_cone.vertex(Point(0, 1, 0));
+    const int div = 25;
+    float alpha;
+    float step = 2.0 * M_PI / (div);
+    // Choix de la primitive OpenGL
+    m_cone = Mesh(GL_TRIANGLE_STRIP);
+    for (int i=0;i<=div;++i) {
+    alpha = i * step; // Angle varie de 0 à 2𝝿
+    m_cone.normal(Vector(cos(alpha)/sqrtf(2.f), 0, sin(alpha)/sqrtf(2.f)));
+    m_cone.vertex(Point(cos(alpha), 0, sin(alpha)));
+    m_cone.normal(Vector(cos(alpha)/sqrtf(2.f), 1.f/sqrtf(2.f), sin(alpha)/sqrtf(2.f)));
+    m_cone.vertex(Point(0, 1, 0));
     }
 }
 
@@ -75,28 +75,28 @@ m_disque.vertex( Point(cos(alpha), 0, sin(alpha)) );
 
 void ViewerEtudiant::init_sphere()
 {
- // Variation des angles alpha et beta
-const int divBeta = 16;
-const int divAlpha = divBeta/2;
-int i,j;
-float beta, alpha, alpha2;
-// Choix de la primitive OpenGL
-m_sphere = Mesh(GL_TRIANGLE_STRIP);
-// Variation des angles alpha et beta
-for(int i=0; i < divAlpha; ++i)
-{
-alpha = -0.5f * M_PI + float(i) * M_PI / divAlpha;
-alpha2 = -0.5f * M_PI + float(i+1) * M_PI / divAlpha;
-for(int j = 0; j <= divBeta; ++j)
-{
-beta = float(j) * 2.f * M_PI / (divBeta);
-m_sphere.normal( Vector(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * sin(beta)) );
-m_sphere.vertex( Point(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * sin(beta)) );
-m_sphere.normal( Vector(cos(alpha2) * cos(beta), sin(alpha2), cos(alpha2) * sin(beta)));
-m_sphere.vertex( Point(cos(alpha2) * cos(beta), sin(alpha2), cos(alpha2) * sin(beta)) );
-} // boucle sur les j, angle beta, dessin des sommets d’un cercle
-m_sphere.restart_strip(); // Demande un nouveau strip
-} // boucle sur les i, angle alpha, sphère = superposition de cercles
+    // Variation des angles alpha et beta
+    const int divBeta = 16;
+    const int divAlpha = divBeta/2;
+    int i,j;
+    float beta, alpha, alpha2;
+    // Choix de la primitive OpenGL
+    m_sphere = Mesh(GL_TRIANGLE_STRIP);
+    // Variation des angles alpha et beta
+    for(int i=0; i < divAlpha; ++i)
+    {
+    alpha = -0.5f * M_PI + float(i) * M_PI / divAlpha;
+    alpha2 = -0.5f * M_PI + float(i+1) * M_PI / divAlpha;
+    for(int j = 0; j <= divBeta; ++j)
+    {
+    beta = float(j) * 2.f * M_PI / (divBeta);
+    m_sphere.normal( Vector(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * sin(beta)) );
+    m_sphere.vertex( Point(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * sin(beta)) );
+    m_sphere.normal( Vector(cos(alpha2) * cos(beta), sin(alpha2), cos(alpha2) * sin(beta)));
+    m_sphere.vertex( Point(cos(alpha2) * cos(beta), sin(alpha2), cos(alpha2) * sin(beta)) );
+    } // boucle sur les j, angle beta, dessin des sommets d’un cercle
+    m_sphere.restart_strip(); // Demande un nouveau strip
+    } // boucle sur les i, angle alpha, sphère = superposition de cercles
 }
 
 
@@ -127,6 +127,71 @@ void ViewerEtudiant::init_cylinder()
 
 }
 
+void ViewerEtudiant::init_plane_body() {
+    // Variation des angles alpha et beta
+    const int divBeta = 16;
+    const int divAlpha = divBeta/2;
+    int i,j;
+    float beta, alpha, alpha2;
+    // Choix de la primitive OpenGL
+    m_plane_body = Mesh(GL_TRIANGLE_STRIP);
+    // Variation des angles alpha et beta
+    for(int i=0; i < divAlpha; ++i)
+    {
+    alpha = -0.5f * M_PI + float(i) * M_PI / divAlpha;
+    alpha2 = -0.5f * M_PI + float(i+1) * M_PI / divAlpha;
+    for(int j = 0; j <= divBeta; ++j)
+    {
+    beta = float(j) * 2.f * M_PI / (divBeta);
+    m_plane_body.normal( Vector(5 * cos(alpha) * cos(beta), sin(alpha), cos(alpha) * sin(beta)) );
+    m_plane_body.vertex( Point(5 * cos(alpha) * cos(beta), sin(alpha), cos(alpha) * sin(beta)) );
+    m_plane_body.normal( Vector(5 * cos(alpha2) * cos(beta), sin(alpha2), cos(alpha2) * sin(beta)));
+    m_plane_body.vertex( Point(5 * cos(alpha2) * cos(beta), sin(alpha2), cos(alpha2) * sin(beta)) );
+    } // boucle sur les j, angle beta, dessin des sommets d’un cercle
+    m_plane_body.restart_strip(); // Demande un nouveau strip
+    } // boucle sur les i, angle alpha, sphère = superposition de cercles
+}
+
+void ViewerEtudiant::init_plane_wings()
+{
+
+    m_plane_wings = Mesh(GL_TRIANGLE_STRIP);
+    static float pt[8][3] = { {-1,-0.2,-5}, {1,-0.2,-5}, {1,-0.2,5}, {-1,-0.2, 5}, {-1,0.2,-5}, {1,0.2,-5}, {1,0.2,5}, {-1,0.2,5} };
+    static int f[6][4] = { {0,1,2,3}, {5,4,7,6}, {2,1,5,6}, {0,3,7,4}, {3,2,6,7}, {1,0,4,5} };
+    static float n[6][3] = { {0,-1,0}, {0,1,0}, {1,0,0}, {-1,0,0}, {0,0,1}, {0,0,-1} };
+
+    for (int i=0; i<6; i++) // i = numéro de la face
+    {
+        // La normale à la face
+        m_plane_wings.normal(n[i][0], n[i][1], n[i][2]);
+        // Les 4 sommets de la face
+        m_plane_wings.vertex( pt[ f[i][0] ][0], pt[ f[i][0] ][1], pt[ f[i][0] ][2] );
+        m_plane_wings.vertex( pt[ f[i][1] ][0], pt[ f[i][1] ][1], pt[ f[i][1] ][2] );
+        m_plane_wings.vertex( pt[ f[i][3] ][0], pt[ f[i][3] ][1], pt[ f[i][3] ][2] );
+        m_plane_wings.vertex( pt[ f[i][2] ][0], pt[ f[i][2] ][1], pt[ f[i][2] ][2] );
+        m_plane_wings.restart_strip(); // Demande un nouveau strip
+    }
+}
+
+void ViewerEtudiant::init_plane_aileron()
+{
+        // Variation de l’angle de 0 à 2𝝿
+    const int div = 25;
+    float alpha;
+    float step = 2.0 * M_PI / (div);
+    // Choix de la primitive OpenGL
+    m_plane_aileron = Mesh(GL_TRIANGLE_STRIP);
+    for (int i=0;i<=div;++i) {
+    alpha = i * step; // Angle varie de 0 à 2𝝿
+    m_plane_aileron.normal(Vector(cos(alpha)/sqrtf(2.f), 0, 0.5 * sin(alpha)/sqrtf(2.f)));
+    m_plane_aileron.vertex(Point(cos(alpha), 0, 0.5 * sin(alpha)));
+    m_plane_aileron.normal(Vector(cos(alpha)/sqrtf(2.f), 1.f/sqrtf(2.f), sin(alpha)/sqrtf(2.f)));
+    m_plane_aileron.vertex(Point(0, 1, 0));
+    }
+}
+
+
+
 
 
 
@@ -145,6 +210,10 @@ int ViewerEtudiant::init()
     init_sphere();
     init_cylinder();
     init_disque();
+    
+    init_plane_body();
+    init_plane_wings();
+    init_plane_aileron();
 
     /// Chargement des textures
     
@@ -163,16 +232,17 @@ void ViewerEtudiant::draw_cube(const Transform& T)
 // gl.texture(....);
  gl.model( T );
  gl.draw( m_cube);
+ //gl.debug_normals(1); //To debug normals
 }
 
 void ViewerEtudiant::draw_cone(const Transform& T)
 {
 // gl.texture(....);
- gl.model( T );
- gl.draw( m_cone);
-  Transform Tch = T * Translation( 0, 0, 0);
-gl.model( Tch );
-gl.draw( m_disque);
+    gl.model( T );
+    gl.draw( m_cone);
+    Transform Tch = T * Translation( 0, 0, 0);
+    gl.model( Tch );
+    gl.draw( m_disque);
 }
 
 void ViewerEtudiant::draw_sphere(const Transform& T)
@@ -198,6 +268,30 @@ gl.model( Tcb );
 gl.draw( m_disque);
 }
 
+void ViewerEtudiant::draw_plane_body(const Transform& T)
+{
+// gl.texture(....);
+ gl.model( T );
+ gl.draw( m_plane_body );
+}
+
+void ViewerEtudiant::draw_plane_wings(const Transform& T)
+{
+// gl.texture(....);
+ gl.model( T );
+ gl.draw( m_plane_wings);
+ //gl.debug_normals(1); //To debug normals
+}
+
+void ViewerEtudiant::draw_plane_aileron(const Transform& T)
+{
+// gl.texture(....);
+    gl.model( T );
+    gl.draw( m_plane_aileron);
+    Transform Tch = T * Translation( 0, 0, 0);
+    gl.model( Tch );
+    gl.draw( m_disque);
+}
 /*
  * Fonction dans laquelle les appels pour les affichages sont effectues.
  */
@@ -213,16 +307,19 @@ int ViewerEtudiant::render()
     /// Appel de la fonction render() de la class Viewer
     /// pour que vous voyez apparaitre un premier objet
     /// a supprimer ensuite
-    Viewer::render();
+    //Viewer::render();
     
     Transform T = Translation (1,0,10);
     Transform Z = Translation (5,0,0);
     /// Appel des fonctions du type 'draw_votreObjet'
-    draw_cube(Translation (0,0,0));
-    draw_cone(T);
+    //draw_cube(Translation (0,0,0));
+    /*draw_cone(T);
     draw_cylinder(Z);
-    draw_sphere(Translation (5,5,0));
-    
+    draw_sphere(Translation (5,5,0));*/
+
+    draw_plane_body(Translation (0,0,0));
+    draw_plane_wings(Translation (0,0,0));
+    draw_plane_aileron(Translation (2,1,0));
     
     return 1;
     

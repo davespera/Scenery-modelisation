@@ -64,6 +64,8 @@ protected:
     void init_cylinder();
     void init_disque();
 
+    void init_plane();
+
     void init_plane_body();
     void init_plane_motor_l();
     void init_plane_motor_r();
@@ -77,6 +79,8 @@ protected:
     void draw_sphere(const Transform & T);
     void draw_cylinder(const Transform & T);
     void draw_cone(const Transform & T);
+
+    void draw_plane(const Transform & T);
 
     void draw_plane_body(const Transform & T);
     void draw_plane_motor_l(const Transform & T);

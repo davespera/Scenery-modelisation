@@ -320,44 +320,63 @@ gl.model( Tcb );
 gl.draw( m_disque);
 }
 
-void ViewerEtudiant::draw_plane_body(const Transform& T)
+void ViewerEtudiant::draw_plane(const Transform& T)
 {
-// gl.texture(....);
- gl.model( T );
- gl.draw( m_plane_body );
+    gl.debug_normals(0.5);
+    //Plane body
+    // gl.texture(....);
+    Transform Tpb = T * Scale(5,1,1);
+    gl.model( Tpb );
+    gl.draw( m_sphere );
+
+    //Plane motor l
+    // gl.texture(....);
+    Transform Tml = T * Translation(0,-0.75,-3) * Scale (1, 0.5, 0.5);
+    gl.model( Tml );
+    gl.draw( m_sphere );
+
+    //Plane motor r
+    // gl.texture(....);
+    Transform Tmr = T * Translation(0,-0.75,3) * Scale (1, 0.5, 0.5);;
+    gl.model( Tmr );
+    gl.draw( m_sphere );
+
+    //Plane wings
+    // gl.texture(....);
+    Transform Tw = T * Scale (1, 0.2, 5);
+    gl.model( Tw );
+    gl.draw( m_cube );
+    //gl.debug_normals(1); //To debug normals
+
+    //Plane aileron
+    // gl.texture(....);
+    Transform Ta = T * Translation(2, 1, 0) * Scale(1, 1, 0.25);
+    gl.model( Ta );
+    gl.draw( m_cone);
+    Transform Tch = T * Translation( 2, 1, 0) * Scale (1, 1, 0.25);
+    gl.model( Tch );
+    gl.draw( m_disque);
 }
 
-void ViewerEtudiant::draw_plane_motor_l(const Transform& T)
+/*void ViewerEtudiant::draw_plane_motor_l(const Transform& T)
 {
-// gl.texture(....);
- gl.model( T );
- gl.draw( m_plane_motor_l );
+
 }
 
 void ViewerEtudiant::draw_plane_motor_r(const Transform& T)
 {
-// gl.texture(....);
- gl.model( T );
- gl.draw( m_plane_motor_r );
+
 }
 
 void ViewerEtudiant::draw_plane_wings(const Transform& T)
 {
-// gl.texture(....);
- gl.model( T );
- gl.draw( m_plane_wings);
- //gl.debug_normals(1); //To debug normals
+
 }
 
 void ViewerEtudiant::draw_plane_aileron(const Transform& T)
 {
-// gl.texture(....);
-    gl.model( T );
-    gl.draw( m_plane_aileron);
-    Transform Tch = T * Translation( 0, 0, 0);
-    gl.model( Tch );
-    gl.draw( m_disque);
-}
+
+}*/
 /*
  * Fonction dans laquelle les appels pour les affichages sont effectues.
  */
@@ -383,11 +402,12 @@ int ViewerEtudiant::render()
     draw_cylinder(Z);
     draw_sphere(Translation (5,5,0));*/
 
-    draw_plane_body(Translation (0,0,0));
-    draw_plane_motor_l(Translation (0,-0.75,-3));
+    draw_plane(Translation (0,0,0));
+   
+    /*draw_plane_motor_l(Translation (0,-0.75,-3));
     draw_plane_motor_r(Translation (0,-0.75,3));
     draw_plane_wings(Translation (0,0,0));
-    draw_plane_aileron(Translation (2,1,0));
+    draw_plane_aileron(Translation (2,1,0));*/
     
     return 1;
     

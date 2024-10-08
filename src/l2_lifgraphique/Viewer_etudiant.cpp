@@ -152,6 +152,56 @@ void ViewerEtudiant::init_plane_body() {
     } // boucle sur les i, angle alpha, sphère = superposition de cercles
 }
 
+void ViewerEtudiant::init_plane_motor_l() {
+    // Variation des angles alpha et beta
+    const int divBeta = 16;
+    const int divAlpha = divBeta/2;
+    int i,j;
+    float beta, alpha, alpha2;
+    // Choix de la primitive OpenGL
+    m_plane_motor_l = Mesh(GL_TRIANGLE_STRIP);
+    // Variation des angles alpha et beta
+    for(int i=0; i < divAlpha; ++i)
+    {
+    alpha = -0.5f * M_PI + float(i) * M_PI / divAlpha;
+    alpha2 = -0.5f * M_PI + float(i+1) * M_PI / divAlpha;
+    for(int j = 0; j <= divBeta; ++j)
+    {
+    beta = float(j) * 2.f * M_PI / (divBeta);
+    m_plane_motor_l.normal( Vector(cos(alpha) * cos(beta), 0.5 * sin(alpha), 0.5 * cos(alpha) * sin(beta)) );
+    m_plane_motor_l.vertex( Point(cos(alpha) * cos(beta), 0.5 * sin(alpha), 0.5 * cos(alpha) * sin(beta)) );
+    m_plane_motor_l.normal( Vector(cos(alpha2) * cos(beta), 0.5 * sin(alpha2), 0.5 * cos(alpha2) * sin(beta)));
+    m_plane_motor_l.vertex( Point(cos(alpha2) * cos(beta), 0.5 * sin(alpha2), 0.5 * cos(alpha2) * sin(beta)) );
+    } // boucle sur les j, angle beta, dessin des sommets d’un cercle
+    m_plane_body.restart_strip(); // Demande un nouveau strip
+    } // boucle sur les i, angle alpha, sphère = superposition de cercles
+}
+
+void ViewerEtudiant::init_plane_motor_r() {
+    // Variation des angles alpha et beta
+    const int divBeta = 16;
+    const int divAlpha = divBeta/2;
+    int i,j;
+    float beta, alpha, alpha2;
+    // Choix de la primitive OpenGL
+    m_plane_motor_r = Mesh(GL_TRIANGLE_STRIP);
+    // Variation des angles alpha et beta
+    for(int i=0; i < divAlpha; ++i)
+    {
+    alpha = -0.5f * M_PI + float(i) * M_PI / divAlpha;
+    alpha2 = -0.5f * M_PI + float(i+1) * M_PI / divAlpha;
+    for(int j = 0; j <= divBeta; ++j)
+    {
+    beta = float(j) * 2.f * M_PI / (divBeta);
+    m_plane_motor_r.normal( Vector(cos(alpha) * cos(beta), 0.5 * sin(alpha), 0.5 * cos(alpha) * sin(beta)) );
+    m_plane_motor_r.vertex( Point(cos(alpha) * cos(beta), 0.5 * sin(alpha), 0.5 * cos(alpha) * sin(beta)) );
+    m_plane_motor_r.normal( Vector(cos(alpha2) * cos(beta), 0.5 * sin(alpha2), 0.5 * cos(alpha2) * sin(beta)));
+    m_plane_motor_r.vertex( Point(cos(alpha2) * cos(beta), 0.5 * sin(alpha2), 0.5 * cos(alpha2) * sin(beta)) );
+    } // boucle sur les j, angle beta, dessin des sommets d’un cercle
+    m_plane_body.restart_strip(); // Demande un nouveau strip
+    } // boucle sur les i, angle alpha, sphère = superposition de cercles
+}
+
 void ViewerEtudiant::init_plane_wings()
 {
 
@@ -212,6 +262,8 @@ int ViewerEtudiant::init()
     init_disque();
     
     init_plane_body();
+    init_plane_motor_l();
+    init_plane_motor_r();
     init_plane_wings();
     init_plane_aileron();
 
@@ -275,6 +327,20 @@ void ViewerEtudiant::draw_plane_body(const Transform& T)
  gl.draw( m_plane_body );
 }
 
+void ViewerEtudiant::draw_plane_motor_l(const Transform& T)
+{
+// gl.texture(....);
+ gl.model( T );
+ gl.draw( m_plane_motor_l );
+}
+
+void ViewerEtudiant::draw_plane_motor_r(const Transform& T)
+{
+// gl.texture(....);
+ gl.model( T );
+ gl.draw( m_plane_motor_r );
+}
+
 void ViewerEtudiant::draw_plane_wings(const Transform& T)
 {
 // gl.texture(....);
@@ -318,6 +384,8 @@ int ViewerEtudiant::render()
     draw_sphere(Translation (5,5,0));*/
 
     draw_plane_body(Translation (0,0,0));
+    draw_plane_motor_l(Translation (0,-0.75,-3));
+    draw_plane_motor_r(Translation (0,-0.75,3));
     draw_plane_wings(Translation (0,0,0));
     draw_plane_aileron(Translation (2,1,0));
     

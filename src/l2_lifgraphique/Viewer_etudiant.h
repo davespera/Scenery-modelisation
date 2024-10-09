@@ -48,10 +48,6 @@ protected:
     Mesh m_disque;
 
     Mesh m_plane_body;
-    Mesh m_plane_motor_l;
-    Mesh m_plane_motor_r;
-    Mesh m_plane_wings;
-    Mesh m_plane_aileron;
     /// Declaration des Textures
     
     
@@ -64,13 +60,7 @@ protected:
     void init_cylinder();
     void init_disque();
 
-    void init_plane();
-
     void init_plane_body();
-    void init_plane_motor_l();
-    void init_plane_motor_r();
-    void init_plane_wings();
-    void init_plane_aileron();
 
     
     /// Declaration des fonctions draw_votreObjet(const Transform& T)
@@ -81,13 +71,6 @@ protected:
     void draw_cone(const Transform & T);
 
     void draw_plane(const Transform & T);
-
-    void draw_plane_body(const Transform & T);
-    void draw_plane_motor_l(const Transform & T);
-    void draw_plane_motor_r(const Transform & T);
-    void draw_plane_wings(const Transform & T);
-    void draw_plane_aileron(const Transform & T);
-    
 };
 
 

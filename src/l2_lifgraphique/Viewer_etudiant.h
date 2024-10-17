@@ -49,7 +49,8 @@ protected:
 
     Mesh m_plane_body;
     /// Declaration des Textures
-    
+    Mesh m_terrain;
+    Image m_terrainAlti;
     
 
     /// Declaration des fonction de creation de Mesh du type init_votreObjet()
@@ -62,6 +63,8 @@ protected:
 
     void init_plane_body();
 
+    void init_terrain(const Image& im);
+
     
     /// Declaration des fonctions draw_votreObjet(const Transform& T)
 
@@ -71,6 +74,8 @@ protected:
     void draw_cone(const Transform & T);
 
     void draw_plane(const Transform & T);
+
+    void draw_terrain(const Transform &T);
 };
 
 

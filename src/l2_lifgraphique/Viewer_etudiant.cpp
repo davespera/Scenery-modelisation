@@ -127,6 +127,44 @@ void ViewerEtudiant::init_cylinder()
 
 }
 
+Vector terrainNormal(const Image& im, const int i, const int j) {
+
+    //Calcul de la normale au point (i, j) de l'image
+    int ip = i-1;
+    int in = i+1;
+    int jp = j-1;
+    int jn = j+1;
+
+    Point a( ip, im(ip, j).r, j );
+    Point b( in, im(in, j).r, j );
+    Point c( i, im(i, jp).r, jp );
+    Point d( i, im(i, jn).r, jn);
+
+    Vector ab = normalize(b - a);
+    Vector cd = normalize(d - c);
+
+    Vector n = cross(ab, cd);
+
+    return n;
+}
+
+void ViewerEtudiant::init_terrain(const Image& im) {
+    
+    m_terrain = Mesh(GL_TRIANGLE_STRIP); 
+
+    for(int i=1; i<im.width()-2; ++i) {
+        for(int j=1; j<im.height()-1; ++j) {
+
+            m_terrain.normal( terrainNormal(im, i+1, j) );
+            m_terrain.vertex( Point(i+1, 25.f * im(i + 1, j).r, j) );
+
+            m_terrain.normal( terrainNormal(im, i, j) );
+            m_terrain.vertex( Point(i, 25.f * im(i, j).r, j) );
+        }
+        m_terrain.restart_strip();
+    }
+}
+
 int ViewerEtudiant::init()
 {
     Viewer::init();
@@ -143,7 +181,11 @@ int ViewerEtudiant::init()
     init_disque();
 
     /// Chargement des textures
-    
+    // Image servant de carte de hauteur
+    m_terrainAlti = read_image("data/terrain/terrain.png");
+
+    //Création du Mesh
+    init_terrain(m_terrainAlti);
     
     return 0;
 }
@@ -197,7 +239,7 @@ gl.draw( m_disque);
 
 void ViewerEtudiant::draw_plane(const Transform& T)
 {
-    gl.debug_normals(0.5);
+    //gl.debug_normals(0.5);
     //Plane body
     // gl.texture(....);
     Transform Tpb = T * Rotation(Vector(0, 0, 1),  90) * Scale(1,4,1);
@@ -242,6 +284,11 @@ void ViewerEtudiant::draw_plane(const Transform& T)
 /*
  * Fonction dans laquelle les appels pour les affichages sont effectues.
  */
+void ViewerEtudiant::draw_terrain(const Transform &T) {
+    gl.model( T );
+    gl.draw( m_terrain );
+}
+
 int ViewerEtudiant::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -256,7 +303,7 @@ int ViewerEtudiant::render()
     /// a supprimer ensuite
     //Viewer::render();
     
-    Transform T = Translation (1,0,10);
+    Transform T = Translation (0,0,0);
     Transform Z = Translation (5,0,0);
     /// Appel des fonctions du type 'draw_votreObjet'
     //draw_cube(Translation (0,0,0));
@@ -265,6 +312,8 @@ int ViewerEtudiant::render()
     draw_sphere(Translation (5,5,0));*/
 
     draw_plane(Translation (0,0,0));
+
+    draw_terrain(T);
     
     return 1;
     

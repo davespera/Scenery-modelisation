@@ -49,8 +49,16 @@ protected:
 
     Mesh m_plane_body;
     /// Declaration des Textures
+    GLuint math_texture;
+    GLuint papillon_texture;
+    GLuint monde_texture;
+    GLuint tree_texture;
+
     Mesh m_terrain;
     Image m_terrainAlti;
+    GLuint m_terrainTexture;
+
+    Mesh m_quad;
     
 
     /// Declaration des fonction de creation de Mesh du type init_votreObjet()
@@ -64,6 +72,9 @@ protected:
     void init_plane_body();
 
     void init_terrain(const Image& im);
+    void init_quad();
+
+    
 
     
     /// Declaration des fonctions draw_votreObjet(const Transform& T)
@@ -76,6 +87,7 @@ protected:
     void draw_plane(const Transform & T);
 
     void draw_terrain(const Transform &T);
+    void draw_tree(const Transform & T);
 };
 
 

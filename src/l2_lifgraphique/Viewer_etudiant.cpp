@@ -9,10 +9,6 @@
 
 using namespace std;
 
-
-
-
-
 /*
  * Exemple de definition de fonction permettant la creation du Mesh de votre Objet.
  */
@@ -21,20 +17,85 @@ void ViewerEtudiant::init_cube()
 
     m_cube = Mesh(GL_TRIANGLE_STRIP);
     static float pt[8][3] = { {-1,-1,-1}, {1,-1,-1}, {1,-1,1}, {-1,-1,1}, {-1,1,-1}, {1,1,-1}, {1,1,1}, {-1,1,1} };
-    static int f[6][4] = { {0,1,2,3}, {5,4,7,6}, {2,1,5,6}, {0,3,7,4}, {3,2,6,7}, {1,0,4,5} };
+    static int f[6][4] = { {0,1,3,2}, {5,4,6,7}, {2,1,6,5}, {0,3,4,7}, {3,2,7,6}, {1,0,5,4} };
     static float n[6][3] = { {0,-1,0}, {0,1,0}, {1,0,0}, {-1,0,0}, {0,0,1}, {0,0,-1} };
+    static float texcoords[8][2] = {
+        {0.0f, 0.0f}, // Vertex 0
+        {1.0f, 0.0f}, // Vertex 1
+        {1.0f, 1.0f}, // Vertex 2
+        {0.0f, 1.0f}, // Vertex 3
+        {0.0f, 0.0f}, // Vertex 4
+        {1.0f, 0.0f}, // Vertex 5
+        {1.0f, 1.0f}, // Vertex 6
+        {0.0f, 1.0f}  // Vertex 7
+    };
 
     for (int i=0; i<6; i++) // i = numéro de la face
     {
         // La normale à la face
         m_cube.normal(n[i][0], n[i][1], n[i][2]);
         // Les 4 sommets de la face
-        m_cube.vertex( pt[ f[i][0] ][0], pt[ f[i][0] ][1], pt[ f[i][0] ][2] );
-        m_cube.vertex( pt[ f[i][1] ][0], pt[ f[i][1] ][1], pt[ f[i][1] ][2] );
-        m_cube.vertex( pt[ f[i][3] ][0], pt[ f[i][3] ][1], pt[ f[i][3] ][2] );
-        m_cube.vertex( pt[ f[i][2] ][0], pt[ f[i][2] ][1], pt[ f[i][2] ][2] );
+        for (int j=0; j<4; j++) {
+            int vertexIndex = f[i][j];
+            
+            m_cube.texcoord(texcoords[vertexIndex][0], texcoords[vertexIndex][1]);
+            m_cube.vertex( pt[vertexIndex][0], pt[vertexIndex][1], pt[vertexIndex][2] );
+        } 
         m_cube.restart_strip(); // Demande un nouveau strip
     }
+}
+
+/*void ViewerEtudiant::init_square() {
+    m_square = Mesh(GL_TRIANGLE_STRIP);
+
+    m_square.color(Color(1,1,1));
+    
+    // Define vertices for the square (2D plane in 3D space)
+    static float pt[4][3] = {
+        {-1, -1, 0},  // Bottom-left corner
+        {1, -1, 0},  // Bottom-right corner
+        {-1, 1, 0},  // Top-right corner
+        {1, 1, 0}   // Top-left corner
+    };
+
+    // Define texture coordinates for the square
+    static float texcoords[4][2] = {
+        {0, 0},  // Texture coordinate for bottom-left
+        {1, 0},  // Texture coordinate for bottom-right
+        {1, 1},  // Texture coordinate for top-right
+        {0, 1}   // Texture coordinate for top-left
+    };
+
+    // Normal vector for the square (facing along the positive Z-axis)
+    // Set the normal for the square
+    m_square.normal(0, 0, 1);
+    
+    // Define the vertices and corresponding texture coordinates
+    for (int i = 0; i < 4; i++) {
+        m_square.texcoord(texcoords[i][0], texcoords[i][1]);  // Add texture coordinates
+        m_square.vertex(pt[i][0], pt[i][1], pt[i][2]);
+    }
+
+}*/
+
+void ViewerEtudiant::init_quad()
+{
+m_quad = Mesh(GL_TRIANGLE_STRIP);
+m_quad.color( Color(1, 1, 1));
+
+m_quad.normal( 0, 0, 1 );
+
+m_quad.texcoord( 0, 0 );
+m_quad.vertex( -1, -1, 0 );
+
+m_quad.texcoord( 1, 0 );
+m_quad.vertex( 1, -1, 0);
+
+m_quad.texcoord( 0, 1 );
+m_quad.vertex( -1, 1, 0 );
+
+m_quad.texcoord( 1, 1 );
+m_quad.vertex(1, 1, 0 );
 }
 
 void ViewerEtudiant::init_cone()
@@ -47,8 +108,12 @@ void ViewerEtudiant::init_cone()
     m_cone = Mesh(GL_TRIANGLE_STRIP);
     for (int i=0;i<=div;++i) {
     alpha = i * step; // Angle varie de 0 à 2𝝿
+    //circle
+    m_cone.texcoord(i/div, 0);
     m_cone.normal(Vector(cos(alpha)/sqrtf(2.f), 0, sin(alpha)/sqrtf(2.f)));
     m_cone.vertex(Point(cos(alpha), 0, sin(alpha)));
+    //up
+    m_cone.texcoord(i/div, 1);
     m_cone.normal(Vector(cos(alpha)/sqrtf(2.f), 1.f/sqrtf(2.f), sin(alpha)/sqrtf(2.f)));
     m_cone.vertex(Point(0, 1, 0));
     }
@@ -90,8 +155,12 @@ void ViewerEtudiant::init_sphere()
     for(int j = 0; j <= divBeta; ++j)
     {
     beta = float(j) * 2.f * M_PI / (divBeta);
+
+    m_sphere.texcoord( beta / (2.0 * M_PI), 0.5 + (alpha / M_PI) );
     m_sphere.normal( Vector(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * sin(beta)) );
     m_sphere.vertex( Point(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * sin(beta)) );
+
+    m_sphere.texcoord( beta / (2.0 * M_PI), 0.5 + (alpha2 / M_PI) );
     m_sphere.normal( Vector(cos(alpha2) * cos(beta), sin(alpha2), cos(alpha2) * sin(beta)));
     m_sphere.vertex( Point(cos(alpha2) * cos(beta), sin(alpha2), cos(alpha2) * sin(beta)) );
     } // boucle sur les j, angle beta, dessin des sommets d’un cercle
@@ -118,9 +187,11 @@ void ViewerEtudiant::init_cylinder()
         Vector normal(cos(alpha), 0, sin(alpha));
         
         // Add bottom and top vertices at this angle
+        m_cylinder.texcoord(i/div, 0);
         m_cylinder.normal(normal);
         m_cylinder.vertex(Point(cos(alpha), -1, sin(alpha)));
         
+        m_cylinder.texcoord(i/div, 1);
         m_cylinder.normal(normal);
         m_cylinder.vertex(Point(cos(alpha), 1, sin(alpha)));
     }
@@ -155,10 +226,12 @@ void ViewerEtudiant::init_terrain(const Image& im) {
     for(int i=1; i<im.width()-2; ++i) {
         for(int j=1; j<im.height()-1; ++j) {
 
-            m_terrain.normal( terrainNormal(im, i+1, j) );
+            m_terrain.texcoord((i+1)/im.width(), j/im.height());
+            m_terrain.normal( -terrainNormal(im, i+1, j) ); //maybe remove -
             m_terrain.vertex( Point(i+1, 25.f * im(i + 1, j).r, j) );
 
-            m_terrain.normal( terrainNormal(im, i, j) );
+            m_terrain.texcoord(i/im.width(), j/im.height());
+            m_terrain.normal( -terrainNormal(im, i, j) );
             m_terrain.vertex( Point(i, 25.f * im(i, j).r, j) );
         }
         m_terrain.restart_strip();
@@ -181,16 +254,25 @@ int ViewerEtudiant::init()
     init_disque();
 
     /// Chargement des textures
+    math_texture = read_texture(0, "data/debug2x2red.png");
+
+    papillon_texture = read_texture(0, "data/papillon.png");
+
+    monde_texture = read_texture(0, "data/monde.jpg");
+
+    tree_texture = read_texture(0, "data/billboard/arbre3.png");
+
+    m_terrainTexture = read_texture(0, "data/terrain/terrain_texture.png");
     // Image servant de carte de hauteur
     m_terrainAlti = read_image("data/terrain/terrain.png");
 
-    //Création du Mesh
+    //Création du Mesh_texture
+    
     init_terrain(m_terrainAlti);
+    init_quad();
     
     return 0;
 }
-
-
 
 /*
  * Exemple de definition de fonction permettant l affichage
@@ -198,15 +280,15 @@ int ViewerEtudiant::init()
  */
 void ViewerEtudiant::draw_cube(const Transform& T)
 {
-// gl.texture(....);
- gl.model( T );
- gl.draw( m_cube);
- //gl.debug_normals(1); //To debug normals
+    gl.texture(math_texture);
+    gl.model( T );
+    gl.draw( m_cube);
+    //gl.debug_normals(1); //To debug normals
 }
 
 void ViewerEtudiant::draw_cone(const Transform& T)
 {
-// gl.texture(....);
+    gl.texture(monde_texture);
     gl.model( T );
     gl.draw( m_cone);
     Transform Tch = T * Translation( 0, 0, 0);
@@ -216,25 +298,25 @@ void ViewerEtudiant::draw_cone(const Transform& T)
 
 void ViewerEtudiant::draw_sphere(const Transform& T)
 {
-// gl.texture(....);
- gl.model( T );
- gl.draw( m_sphere);
+    gl.texture(monde_texture);
+    gl.model( T );
+    gl.draw( m_sphere);
 }
 
 void ViewerEtudiant::draw_cylinder(const Transform& T)
 {
-// gl.texture(....);
- gl.model( T );
- gl.draw( m_cylinder);
+    gl.texture(monde_texture);
+    gl.model( T );
+    gl.draw( m_cylinder);
 
- Transform Tch = T * Translation( 0, -1, 0);
-gl.model( Tch );
-gl.draw( m_disque);
+    Transform Tch = T * Translation( 0, -1, 0);
+    gl.model( Tch );
+    gl.draw( m_disque);
 
-Transform Tcb = T * Translation( 0, 1, 0)
-* Rotation( Vector(1,0,0), 180);
-gl.model( Tcb );
-gl.draw( m_disque);
+    Transform Tcb = T * Translation( 0, 1, 0)
+    * Rotation( Vector(1,0,0), 180);
+    gl.model( Tcb );
+    gl.draw( m_disque);
 }
 
 void ViewerEtudiant::draw_plane(const Transform& T)
@@ -285,13 +367,37 @@ void ViewerEtudiant::draw_plane(const Transform& T)
  * Fonction dans laquelle les appels pour les affichages sont effectues.
  */
 void ViewerEtudiant::draw_terrain(const Transform &T) {
+    //gl.debug_normals(0.5);
+    gl.texture(monde_texture);
     gl.model( T );
     gl.draw( m_terrain );
+}
+
+void ViewerEtudiant::draw_tree(const Transform &T) {
+    gl.debug_normals(0.5);
+
+    gl.texture(tree_texture);
+    gl.model( T );
+    gl.draw( m_quad );
+
+    gl.texture(tree_texture);
+    gl.model( T * Rotation(Vector(0, 1, 0), 180));
+    gl.draw( m_quad );
+
+    gl.texture(tree_texture);
+    gl.model( T * Rotation(Vector(0, 1, 0), 90));
+    gl.draw( m_quad );
+
+    gl.texture(tree_texture);
+    gl.model( T * Rotation(Vector(0, 1, 0), -90));
+    gl.draw( m_quad );
 }
 
 int ViewerEtudiant::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glEnable(GL_TEXTURE_2D);
 
     manageCameraLight();
 
@@ -302,18 +408,21 @@ int ViewerEtudiant::render()
     /// pour que vous voyez apparaitre un premier objet
     /// a supprimer ensuite
     //Viewer::render();
-    
+
     Transform T = Translation (0,0,0);
+    Transform X = Translation (0,0,0) * Scale(0.25, 0.25, 0.25);
+    Transform Y = Translation(-5, 0, 0);
     Transform Z = Translation (5,0,0);
     /// Appel des fonctions du type 'draw_votreObjet'
     //draw_cube(Translation (0,0,0));
-    /*draw_cone(T);
-    draw_cylinder(Z);
-    draw_sphere(Translation (5,5,0));*/
+    //draw_cone(Y);
+    //draw_cylinder(Z);
+    //draw_sphere(Translation (5,5,0));
 
-    draw_plane(Translation (0,0,0));
+    //draw_plane(Translation (0,0,0));
 
-    draw_terrain(T);
+    //draw_terrain(X);
+    draw_tree(T);
     
     return 1;
     

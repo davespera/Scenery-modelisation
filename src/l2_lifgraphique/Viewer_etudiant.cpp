@@ -376,19 +376,20 @@ void ViewerEtudiant::draw_terrain(const Transform &T) {
 void ViewerEtudiant::draw_tree(const Transform &T) {
     gl.debug_normals(0.5);
 
-    gl.texture(tree_texture);
+    gl.alpha_texture(tree_texture); //maybe like this gl.alpha_texture(tree_texture, 0.8);
+    //by default 0.5
     gl.model( T );
     gl.draw( m_quad );
 
-    gl.texture(tree_texture);
+    gl.alpha_texture(tree_texture);
     gl.model( T * Rotation(Vector(0, 1, 0), 180));
     gl.draw( m_quad );
 
-    gl.texture(tree_texture);
+    gl.alpha_texture(tree_texture);
     gl.model( T * Rotation(Vector(0, 1, 0), 90));
     gl.draw( m_quad );
 
-    gl.texture(tree_texture);
+    gl.alpha_texture(tree_texture);
     gl.model( T * Rotation(Vector(0, 1, 0), -90));
     gl.draw( m_quad );
 }

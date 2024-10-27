@@ -317,7 +317,7 @@ void ViewerEtudiant::draw_cube(const Transform& T)
     gl.texture(math_texture);
     gl.model( T );
     gl.draw( m_cube);
-    //gl.debug_normals(1); //To debug normals
+    
 }
 
 void ViewerEtudiant::draw_cone(const Transform& T)
@@ -355,7 +355,7 @@ void ViewerEtudiant::draw_cylinder(const Transform& T)
 
 void ViewerEtudiant::draw_plane(const Transform& T)
 {
-    //gl.debug_normals(0.5);
+
     //Plane body
     // gl.texture(....);
     Transform Tpb = T * Rotation(Vector(0, 0, 1),  90) * Scale(1,4,1);
@@ -401,14 +401,13 @@ void ViewerEtudiant::draw_plane(const Transform& T)
  * Fonction dans laquelle les appels pour les affichages sont effectues.
  */
 void ViewerEtudiant::draw_terrain(const Transform &T) {
-    //gl.debug_normals(0.5);
+   
     gl.texture(monde_texture);
     gl.model( T );
     gl.draw( m_terrain );
 }
 
 void ViewerEtudiant::draw_tree(const Transform &T) {
-    gl.debug_normals(0.5);
 
     gl.alpha_texture(tree_texture); //maybe like this gl.alpha_texture(tree_texture, 0.8);
     //by default 0.5
@@ -476,6 +475,8 @@ int ViewerEtudiant::render()
     manageCameraLight();
 
     gl.camera(m_camera);
+
+    gl.debug_normals(0.5);
     
     
     /// Appel de la fonction render() de la class Viewer

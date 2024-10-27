@@ -317,7 +317,7 @@ void ViewerEtudiant::draw_cube(const Transform& T)
     gl.texture(math_texture);
     gl.model( T );
     gl.draw( m_cube);
-    
+
 }
 
 void ViewerEtudiant::draw_cone(const Transform& T)
@@ -427,7 +427,7 @@ void ViewerEtudiant::draw_tree(const Transform &T) {
     gl.draw( m_quad );
 }
 
-void ViewerEtudiant::draw_multitrees(const Image& im) {
+void ViewerEtudiant::draw_multitrees(const Transform &T, const Image& im) {
     // Define the frequency or positions for trees
     int treeSpacing = 10; // Adjust spacing as needed
 
@@ -439,10 +439,10 @@ void ViewerEtudiant::draw_multitrees(const Image& im) {
             float treeHeightOffset = 0.5f;
 
             // Define the tree's transformation
-            Transform T = Translation(i, altitude + treeHeightOffset, j) * Scale(0.5); // Scale if trees are too large
+            Transform final_T = T * Translation(i, altitude + treeHeightOffset, j) * Scale(0.5); // Scale if trees are too large
 
             // Draw the tree
-            draw_tree(T);
+            draw_tree(final_T);
         }
     }
 }
@@ -497,8 +497,8 @@ int ViewerEtudiant::render()
 
     //draw_plane(Translation (0,0,0));
 
-    draw_terrain(T);
-    draw_multitrees(m_terrainAlti);
+    draw_terrain(X);
+    draw_multitrees(X, m_terrainAlti);
     //draw_cubeMap(R);
     
     return 1;

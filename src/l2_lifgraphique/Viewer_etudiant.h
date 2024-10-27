@@ -91,7 +91,7 @@ protected:
 
     void draw_terrain(const Transform &T);
     void draw_tree(const Transform &T);
-    void draw_multitrees(const Image& im);
+    void draw_multitrees(const Transform &T, const Image& im);
 
     void draw_cubeMap(const Transform & T);
 };

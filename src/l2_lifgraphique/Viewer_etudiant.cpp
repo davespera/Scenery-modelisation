@@ -3,6 +3,8 @@
 #include <cmath>
 #include <cstdio>
 #include <iostream>
+#include <vector>
+
 
 #include "draw.h"        // pour dessiner du point de vue d'une camera
 #include "Viewer_etudiant.h"
@@ -274,6 +276,38 @@ int ViewerEtudiant::init()
     return 0;
 }
 
+/* unsigned int ViewerEtudiant::loadCubemap(std::vector<std::string> faces)
+{
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+    int width, height, nrChannels;
+    for (unsigned int i = 0; i < faces.size(); i++)
+    {
+        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
+        if (data)
+        {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
+                         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
+            );
+            stbi_image_free(data);
+        }
+        else
+        {
+            std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
+            stbi_image_free(data);
+        }
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
+}  */
+
 /*
  * Exemple de definition de fonction permettant l affichage
  * de 'votreObjet' subissant la Transform T
@@ -394,6 +428,45 @@ void ViewerEtudiant::draw_tree(const Transform &T) {
     gl.draw( m_quad );
 }
 
+void ViewerEtudiant::draw_multitrees(const Image& im) {
+    // Define the frequency or positions for trees
+    int treeSpacing = 10; // Adjust spacing as needed
+
+    for (int i = treeSpacing; i < im.width(); i += treeSpacing) {
+        for (int j = treeSpacing; j < im.height(); j += treeSpacing) {
+            // Retrieve the terrain altitude at (i, j)
+            float altitude = 25.f * im(i, j).r;
+
+            float treeHeightOffset = 0.5f;
+
+            // Define the tree's transformation
+            Transform T = Translation(i, altitude + treeHeightOffset, j) * Scale(0.5); // Scale if trees are too large
+
+            // Draw the tree
+            draw_tree(T);
+        }
+    }
+}
+
+/*void ViewerEtudiant::draw_cubeMap(const Transform &T) {
+    vector<std::string> faces;
+{
+    "data/cubemap/skybox/right.jpg",
+    "data/cubemap/skybox/left.jpg",
+    "data/cubemap/skybox/top.jpg",
+    "data/cubemap/skybox/bottom.jpg",
+    "data/cubemap/skybox/front.jpg",
+    "data/cubemap/skybox/back.jpg"
+};
+
+
+unsigned int cubemapTexture = loadCubemap(faces);  
+
+    gl.texture(cubemapTexture);
+    gl.model( T );
+    gl.draw( m_cube );
+}*/
+
 int ViewerEtudiant::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -414,6 +487,7 @@ int ViewerEtudiant::render()
     Transform X = Translation (0,0,0) * Scale(0.25, 0.25, 0.25);
     Transform Y = Translation(-5, 0, 0);
     Transform Z = Translation (5,0,0);
+    Transform R = Translation (5,5,5);
     /// Appel des fonctions du type 'draw_votreObjet'
     //draw_cube(Translation (0,0,0));
     //draw_cone(Y);
@@ -422,8 +496,9 @@ int ViewerEtudiant::render()
 
     //draw_plane(Translation (0,0,0));
 
-    //draw_terrain(X);
-    draw_tree(T);
+    draw_terrain(T);
+    draw_multitrees(m_terrainAlti);
+    //draw_cubeMap(R);
     
     return 1;
     

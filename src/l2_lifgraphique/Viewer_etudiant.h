@@ -3,6 +3,7 @@
 #define VIEWER_ETUDIANT_H
 
 #include "Viewer.h"
+#include <vector>
 
 
 
@@ -74,6 +75,8 @@ protected:
     void init_terrain(const Image& im);
     void init_quad();
 
+    unsigned int loadCubemap(std::vector<std::string> faces);
+
     
 
     
@@ -87,7 +90,10 @@ protected:
     void draw_plane(const Transform & T);
 
     void draw_terrain(const Transform &T);
-    void draw_tree(const Transform & T);
+    void draw_tree(const Transform &T);
+    void draw_multitrees(const Image& im);
+
+    void draw_cubeMap(const Transform & T);
 };
 
 

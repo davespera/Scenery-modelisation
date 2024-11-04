@@ -82,22 +82,22 @@ void ViewerEtudiant::init_cube()
 
 void ViewerEtudiant::init_quad()
 {
-m_quad = Mesh(GL_TRIANGLE_STRIP);
-m_quad.color( Color(1, 1, 1));
+    m_quad = Mesh(GL_TRIANGLE_STRIP);
+    m_quad.color( Color(1, 1, 1));
 
-m_quad.normal( 0, 0, 1 );
+    m_quad.normal( 0, 0, 1 );
 
-m_quad.texcoord( 0, 0 );
-m_quad.vertex( -1, -1, 0 );
+    m_quad.texcoord( 0, 0 );
+    m_quad.vertex( -1, -1, 0 );
 
-m_quad.texcoord( 1, 0 );
-m_quad.vertex( 1, -1, 0);
+    m_quad.texcoord( 1, 0 );
+    m_quad.vertex( 1, -1, 0);
 
-m_quad.texcoord( 0, 1 );
-m_quad.vertex( -1, 1, 0 );
+    m_quad.texcoord( 0, 1 );
+    m_quad.vertex( -1, 1, 0 );
 
-m_quad.texcoord( 1, 1 );
-m_quad.vertex(1, 1, 0 );
+    m_quad.texcoord( 1, 1 );
+    m_quad.vertex(1, 1, 0 );
 }
 
 void ViewerEtudiant::init_cone()
@@ -109,35 +109,35 @@ void ViewerEtudiant::init_cone()
     // Choix de la primitive OpenGL
     m_cone = Mesh(GL_TRIANGLE_STRIP);
     for (int i=0;i<=div;++i) {
-    alpha = i * step; // Angle varie de 0 à 2𝝿
-    //circle
-    m_cone.texcoord(i/div, 0);
-    m_cone.normal(Vector(cos(alpha)/sqrtf(2.f), 0, sin(alpha)/sqrtf(2.f)));
-    m_cone.vertex(Point(cos(alpha), 0, sin(alpha)));
-    //up
-    m_cone.texcoord(i/div, 1);
-    m_cone.normal(Vector(cos(alpha)/sqrtf(2.f), 1.f/sqrtf(2.f), sin(alpha)/sqrtf(2.f)));
-    m_cone.vertex(Point(0, 1, 0));
+        alpha = i * step; // Angle varie de 0 à 2𝝿
+        //circle
+        m_cone.texcoord(i/div, 0);
+        m_cone.normal(Vector(cos(alpha)/sqrtf(2.f), 0, sin(alpha)/sqrtf(2.f)));
+        m_cone.vertex(Point(cos(alpha), 0, sin(alpha)));
+        //up
+        m_cone.texcoord(i/div, 1);
+        m_cone.normal(Vector(cos(alpha)/sqrtf(2.f), 1.f/sqrtf(2.f), sin(alpha)/sqrtf(2.f)));
+        m_cone.vertex(Point(0, 1, 0));
     }
 }
 
 void ViewerEtudiant::init_disque()
 {
-// Variation de l’angle de 0 à 2𝝿
-const int div = 25;
-float alpha;
-float step = 2.0 * M_PI / (div);
-// Choix primitive OpenGL
-m_disque = Mesh( GL_TRIANGLE_FAN );
-m_disque.normal( Vector(0,1,0) ); // Normale à la surface
-m_disque.vertex( Point(0,0,0) ); // Point du centre du disque
-// Variation de l’angle de 0 à 2𝝿
-for (int i=0; i<=div; ++i)
-{
-alpha = i * step;
-m_disque.normal( Vector(0,1,0) );
-m_disque.vertex( Point(cos(alpha), 0, sin(alpha)) );
-}
+    // Variation de l’angle de 0 à 2𝝿
+    const int div = 25;
+    float alpha;
+    float step = 2.0 * M_PI / (div);
+    // Choix primitive OpenGL
+    m_disque = Mesh( GL_TRIANGLE_FAN );
+    m_disque.normal( Vector(0,1,0) ); // Normale à la surface
+    m_disque.vertex( Point(0,0,0) ); // Point du centre du disque
+    // Variation de l’angle de 0 à 2𝝿
+    for (int i=0; i<=div; ++i)
+    {
+        alpha = i * step;
+        m_disque.normal( Vector(0,1,0) );
+        m_disque.vertex( Point(cos(alpha), 0, sin(alpha)) );
+    }
 }
 
 void ViewerEtudiant::init_sphere()

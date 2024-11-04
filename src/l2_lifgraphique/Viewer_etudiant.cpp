@@ -151,22 +151,22 @@ void ViewerEtudiant::init_sphere()
     m_sphere = Mesh(GL_TRIANGLE_STRIP);
     // Variation des angles alpha et beta
     for(int i=0; i < divAlpha; ++i)
-    {
-    alpha = -0.5f * M_PI + float(i) * M_PI / divAlpha;
-    alpha2 = -0.5f * M_PI + float(i+1) * M_PI / divAlpha;
-    for(int j = 0; j <= divBeta; ++j)
-    {
-    beta = float(j) * 2.f * M_PI / (divBeta);
+        {
+        alpha = -0.5f * M_PI + float(i) * M_PI / divAlpha;
+        alpha2 = -0.5f * M_PI + float(i+1) * M_PI / divAlpha;
+        for(int j = 0; j <= divBeta; ++j)
+            {
+            beta = float(j) * 2.f * M_PI / (divBeta);
 
-    m_sphere.texcoord( beta / (2.0 * M_PI), 0.5 + (alpha / M_PI) );
-    m_sphere.normal( Vector(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * sin(beta)) );
-    m_sphere.vertex( Point(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * sin(beta)) );
+            m_sphere.texcoord( beta / (2.0 * M_PI), 0.5 + (alpha / M_PI) );
+            m_sphere.normal( Vector(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * sin(beta)) );
+            m_sphere.vertex( Point(cos(alpha) * cos(beta), sin(alpha), cos(alpha) * sin(beta)) );
 
-    m_sphere.texcoord( beta / (2.0 * M_PI), 0.5 + (alpha2 / M_PI) );
-    m_sphere.normal( Vector(cos(alpha2) * cos(beta), sin(alpha2), cos(alpha2) * sin(beta)));
-    m_sphere.vertex( Point(cos(alpha2) * cos(beta), sin(alpha2), cos(alpha2) * sin(beta)) );
-    } // boucle sur les j, angle beta, dessin des sommets d’un cercle
-    m_sphere.restart_strip(); // Demande un nouveau strip
+            m_sphere.texcoord( beta / (2.0 * M_PI), 0.5 + (alpha2 / M_PI) );
+            m_sphere.normal( Vector(cos(alpha2) * cos(beta), sin(alpha2), cos(alpha2) * sin(beta)));
+            m_sphere.vertex( Point(cos(alpha2) * cos(beta), sin(alpha2), cos(alpha2) * sin(beta)) );
+            } // boucle sur les j, angle beta, dessin des sommets d’un cercle
+        m_sphere.restart_strip(); // Demande un nouveau strip
     } // boucle sur les i, angle alpha, sphère = superposition de cercles
 }
 

@@ -5,6 +5,7 @@
 #include "Viewer.h"
 #include <vector>
 
+#define NB 7
 
 
 class ViewerEtudiant : public Viewer
@@ -47,6 +48,7 @@ protected:
     Mesh m_sphere;
     Mesh m_cone;
     Mesh m_disque;
+    Mesh m_quad;
 
     Mesh m_plane_body;
     /// Declaration des Textures
@@ -59,7 +61,18 @@ protected:
     Image m_terrainAlti;
     GLuint m_terrainTexture;
 
-    Mesh m_quad;
+    Transform m_Tplane;
+
+    struct Vec {
+        float x;
+        float z;
+
+        Vec operator-(const Vec& other) const {
+        return {x - other.x, z - other.z};
+        }
+    };
+    
+    Vec V[NB];
     
 
     /// Declaration des fonction de creation de Mesh du type init_votreObjet()

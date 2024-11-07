@@ -273,6 +273,16 @@ int ViewerEtudiant::init()
     init_terrain(m_terrainAlti);
     init_quad();
     
+    Vec V[7] = {
+        {0.0f, 0.0f},   // Point 1
+        {1.0f, 0.0f},   // Point 2
+        {2.0f, 1.0f},   // Point 3
+        {3.0f, 2.0f},   // Point 4
+        {4.0f, 1.0f},   // Point 5
+        {5.0f, 0.0f},   // Point 6
+        {6.0f, -1.0f}   // Point 7
+    };
+
     return 0;
 }
 
@@ -497,9 +507,13 @@ int ViewerEtudiant::render()
 
     //draw_plane(Translation (0,0,0));
 
-    draw_terrain(X);
-    draw_multitrees(X, m_terrainAlti);
-    //draw_cubeMap(R);
+    //draw_terrain(X);
+    //draw_multitrees(X, m_terrainAlti);
+
+    draw_plane(m_Tplane);
+    //draw_plane(Identity()); //shows original plane
+    
+
     
     return 1;
     
@@ -514,8 +528,41 @@ int ViewerEtudiant::update( const float time, const float delta )
     // time est le temps ecoule depuis le demarrage de l'application, en millisecondes,
     // delta est le temps ecoule depuis l'affichage de la derniere image / le dernier appel a draw(), en millisecondes.
     
-    
-    
+    float ts = time/1000.0f; // conversion en secondes
+    int te = int(ts); // conversion en entier
+
+
+    //Q1
+    /*float angleRot = 2 * M_PI/7;
+    T_plane = Rotation(Vector(0, 0, 1), angleRot * te);*/
+
+    //Q2
+    /*int ite = te /m_anim.nb_points();
+    float poids = ts -te;
+    Point po = m_anim[ite];
+    int ite_suiv = (ite + 1) % m_anim.nb_points();
+    Point p1 = m_anim[ite_suiv];
+    Vector pos = Vector(po) + poids * (Vector(p1) - Vector(po));
+    m_Tplane = Translation(pos); //Objet mis à la position pos*/
+
+    //Q3
+    int ite = te /m_anim.nb_points();
+    float poids = ts -te;
+    int ite_suiv = (ite + 1) % m_anim.nb_points();
+    int ite_suiv2 = (ite_suiv + 1) % m_anim.nb_points();
+
+    Point p0 = m_anim[ite];
+    Point p1 = m_anim[ite_suiv];
+    Point p2 = m_anim[ite_suiv2];
+    Vector pos = Vector(p0) + poids * (Vector(p1) - Vector(p0));
+    Vector pos_suiv = Vector(p1) + poids * (Vector(p2) - Vector(p1));
+
+    Vector dir = normalize(pos_suiv - pos);
+    Vector up(0, 1, 0);
+    Vector right = cross(dir, up);
+    //m_Tplane = Translation(pos) * Rotation(right, 90) * Rotation(dir, 90);
+    m_Tplane = Translation(pos) * Rotation(dir, 90) * Rotation(up, 90) * Rotation(right, 90);
+
     return 0;
 }
 

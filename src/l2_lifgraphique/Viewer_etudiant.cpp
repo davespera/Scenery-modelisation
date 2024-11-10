@@ -240,6 +240,61 @@ void ViewerEtudiant::init_terrain(const Image& im) {
     }
 }
 
+///Procedure qui initialise un cubemap
+void ViewerEtudiant::init_cubemap()
+{
+    //Choix des primitives
+    m_cubemap=Mesh(GL_TRIANGLE_STRIP);
+    //Sommets du cube               1           2           3       4           5          6        7         8
+    static float point[8][3] = {{-1,-1,-1}, {1,-1,-1}, {1,-1,1}, {-1,-1,1}, {-1,1,-1}, {1,1,-1}, {1,1,1}, {-1,1,1}};
+    //Faces du cube
+    static int face[6][4] = {{0,1,2,3}, {5,4,7,6}, {2,1,5,6}, {0,3,7,4}, {3,2,6,7}, {1,0,4,5}};
+    //Normales des faces
+    static float normal[6][3] = {{0,-1,0}, {0,1,0}, {1,0,0}, {-1,0,0}, {0,0,1}, {0,0,-1}};
+    //Coordonees des textcoord pour chaqu'une des faces
+    static vec2 txc[6][4]={
+                            //Bas
+                            {{1/4.f,0.f},{2/4.f,0.f},{2/4.f,1/3.f},{1/4.f,1/3.f}},
+
+                            //Haut
+                            {{2/4.f,1.f},{1/4.f,1.f},{1/4.f,2/3.f},{2/4.f,2/3.f}},
+
+                            //Right
+                            {{1/4.f,1/3.f},{3/4.f,1/3.f},{3/4.f,2/3.f},{2/4.f,2/3.f}},
+
+                            //Left
+                            {{0.f,1/3.f},{1/4.f,1/3.f},{1/4.f,2/3.f},{0.f,2/3.f}},
+
+
+                            //Front
+                            {{1/4.f,1/3.f},{2/4.f,1/3.f},{2/4.f,2/3.f},{1/4.f,2/3.f}},
+
+
+                            //Back
+                            {{1/4.f,1/3.f},{1.f,1/3.f},{1.f,2/3.f},{3/4.f,2/3.f}}
+
+                            };
+    ///Maintenant on va placé la normale associé a chaqu'une des faces et les faces
+    for (int i=0; i<6; i++)
+    {
+        //Normal de la face i
+        m_cubemap.normal(normal[i][0],-1*normal[i][1], normal[i][2]);
+        //Sommets de la face i
+        m_cubemap.texcoord(txc[i][0].x,txc[i][0].y);
+        //Ici on inverse la coordonee z pour qu'on voit l'interieur du cube
+        m_cubemap.vertex(point[face[i][0]][0], point[face[i][0]][1],-point[face[i][0]][2]);
+        m_cubemap.texcoord(txc[i][1].x,txc[i][0].y);
+        m_cubemap.vertex(point[face[i][1]][0], point[face[i][1]][1], -point[face[i][1]][2]);
+        m_cubemap.texcoord(txc[i][3].x,txc[i][3].y);
+        m_cubemap.vertex(point[face[i][3]][0], point[face[i][3]][1],-point[face[i][3]][2]);
+        m_cubemap.texcoord(txc[i][2].x,txc[i][2].y);
+        m_cubemap.vertex(point[face[i][2]][0], point[face[i][2]][1], -point[face[i][2]][2]);
+        //On demande un nouveau strip
+        m_cubemap.restart_strip();
+    }
+}
+
+
 int ViewerEtudiant::init()
 {
     Viewer::init();
@@ -248,7 +303,8 @@ int ViewerEtudiant::init()
     
     
     /// Appel des fonctions init_votreObjet pour creer les Mesh
-    
+
+    init_quad();
     init_cube();
     init_cone();
     init_sphere();
@@ -264,6 +320,8 @@ int ViewerEtudiant::init()
 
     tree_texture = read_texture(0, "data/billboard/arbre3.png");
 
+    cubemap_texture = read_texture(0, "data/cubemap/skybox.png");
+
     m_terrainTexture = read_texture(0, "data/terrain/terrain_texture.png");
     // Image servant de carte de hauteur
     m_terrainAlti = read_image("data/terrain/terrain.png");
@@ -271,7 +329,8 @@ int ViewerEtudiant::init()
     //Création du Mesh_texture
     
     init_terrain(m_terrainAlti);
-    init_quad();
+    init_cubemap();
+    
     
     Vec V[7] = {
         {0.0f, 0.0f},   // Point 1
@@ -457,6 +516,16 @@ void ViewerEtudiant::draw_multitrees(const Transform &T, const Image& im) {
     }
 }
 
+///Procedure pour dessiner le cube-map
+void ViewerEtudiant::draw_cubemap(const Transform &T)
+{
+    gl.alpha_texture(0.5f);
+    gl.model(T);
+    gl.texture(cubemap_texture);
+    gl.draw(m_cubemap);
+
+}
+
 /*void ViewerEtudiant::draw_cubeMap(const Transform &T) {
     vector<std::string> faces;
 {
@@ -499,6 +568,8 @@ int ViewerEtudiant::render()
     Transform Y = Translation(-5, 0, 0);
     Transform Z = Translation (5,0,0);
     Transform R = Translation (5,5,5);
+    Transform TT=Scale(50, 50, 50);
+    draw_cubemap(TT);
     /// Appel des fonctions du type 'draw_votreObjet'
     //draw_cube(Translation (0,0,0));
     //draw_cone(Y);

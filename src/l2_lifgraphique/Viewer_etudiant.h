@@ -51,11 +51,13 @@ protected:
     Mesh m_quad;
 
     Mesh m_plane_body;
+    Mesh m_cubemap;
     /// Declaration des Textures
     GLuint math_texture;
     GLuint papillon_texture;
     GLuint monde_texture;
     GLuint tree_texture;
+    GLuint cubemap_texture;
 
     Mesh m_terrain;
     Image m_terrainAlti;
@@ -88,7 +90,7 @@ protected:
     void init_terrain(const Image& im);
     void init_quad();
 
-    unsigned int loadCubemap(std::vector<std::string> faces);
+    void init_cubemap();
 
     
 
@@ -106,7 +108,7 @@ protected:
     void draw_tree(const Transform &T);
     void draw_multitrees(const Transform &T, const Image& im);
 
-    void draw_cubeMap(const Transform & T);
+    void draw_cubemap(const Transform &T);
 };
 
 

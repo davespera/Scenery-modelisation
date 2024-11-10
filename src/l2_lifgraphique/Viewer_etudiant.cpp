@@ -488,7 +488,7 @@ void ViewerEtudiant::draw_multitrees(const Transform &T, const Image& im) {
 ///Procedure pour dessiner le cube-map
 void ViewerEtudiant::draw_cubemap(const Transform &T)
 {
-    gl.alpha(0.5f);
+    gl.alpha_texture(0.5f);
     gl.model(T);
     gl.texture(cubemap_texture);
     gl.draw(m_cubemap);

@@ -345,38 +345,6 @@ int ViewerEtudiant::init()
     return 0;
 }
 
-/* unsigned int ViewerEtudiant::loadCubemap(std::vector<std::string> faces)
-{
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-    int width, height, nrChannels;
-    for (unsigned int i = 0; i < faces.size(); i++)
-    {
-        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
-        if (data)
-        {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
-                         0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data
-            );
-            stbi_image_free(data);
-        }
-        else
-        {
-            std::cout << "Cubemap tex failed to load at path: " << faces[i] << std::endl;
-            stbi_image_free(data);
-        }
-    }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    return textureID;
-}  */
-
 /*
  * Exemple de definition de fonction permettant l affichage
  * de 'votreObjet' subissant la Transform T
@@ -470,7 +438,8 @@ void ViewerEtudiant::draw_plane(const Transform& T)
  * Fonction dans laquelle les appels pour les affichages sont effectues.
  */
 void ViewerEtudiant::draw_terrain(const Transform &T) {
-   
+
+    gl.alpha_texture(0.5f);
     gl.texture(monde_texture);
     gl.model( T );
     gl.draw( m_terrain );
@@ -519,31 +488,12 @@ void ViewerEtudiant::draw_multitrees(const Transform &T, const Image& im) {
 ///Procedure pour dessiner le cube-map
 void ViewerEtudiant::draw_cubemap(const Transform &T)
 {
-    gl.alpha_texture(0.5f);
+    gl.alpha(0.5f);
     gl.model(T);
     gl.texture(cubemap_texture);
     gl.draw(m_cubemap);
 
 }
-
-/*void ViewerEtudiant::draw_cubeMap(const Transform &T) {
-    vector<std::string> faces;
-{
-    "data/cubemap/skybox/right.jpg",
-    "data/cubemap/skybox/left.jpg",
-    "data/cubemap/skybox/top.jpg",
-    "data/cubemap/skybox/bottom.jpg",
-    "data/cubemap/skybox/front.jpg",
-    "data/cubemap/skybox/back.jpg"
-};
-
-
-unsigned int cubemapTexture = loadCubemap(faces);  
-
-    gl.texture(cubemapTexture);
-    gl.model( T );
-    gl.draw( m_cube );
-}*/
 
 int ViewerEtudiant::render()
 {
@@ -569,6 +519,7 @@ int ViewerEtudiant::render()
     Transform Z = Translation (5,0,0);
     Transform R = Translation (5,5,5);
     Transform TT=Scale(50, 50, 50);
+    
     draw_cubemap(TT);
     /// Appel des fonctions du type 'draw_votreObjet'
     //draw_cube(Translation (0,0,0));

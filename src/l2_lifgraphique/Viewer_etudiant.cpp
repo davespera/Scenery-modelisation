@@ -583,7 +583,7 @@ int ViewerEtudiant::update( const float time, const float delta )
     Vector up(0, 1, 0);
     Vector right = cross(dir, up);
     //m_Tplane = Translation(pos) * Rotation(right, 90) * Rotation(dir, 90);
-    m_Tplane = Translation(pos) * Rotation(dir, 90) * Rotation(up, 90) * Rotation(right, 90);
+    m_Tplane = Translation(pos) * Rotation(dir, 90) * Rotation(up, 90) * Rotation(right, 90) * Rotation(Vector(0, 0, 1), 180); //Check how to remove last rotation
 
     return 0;
 }

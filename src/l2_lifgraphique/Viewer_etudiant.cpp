@@ -189,11 +189,11 @@ void ViewerEtudiant::init_cylinder()
         Vector normal(cos(alpha), 0, sin(alpha));
         
         // Add bottom and top vertices at this angle
-        m_cylinder.texcoord(i/div, 0);
+        m_cylinder.texcoord(float(i)/div, 0);
         m_cylinder.normal(normal);
         m_cylinder.vertex(Point(cos(alpha), -1, sin(alpha)));
         
-        m_cylinder.texcoord(i/div, 1);
+        m_cylinder.texcoord(float(i)/div, 1);
         m_cylinder.normal(normal);
         m_cylinder.vertex(Point(cos(alpha), 1, sin(alpha)));
     }
@@ -228,12 +228,12 @@ void ViewerEtudiant::init_terrain(const Image& im) {
     for(int i=1; i<im.width()-2; ++i) {
         for(int j=1; j<im.height()-1; ++j) {
 
-            m_terrain.texcoord((i+1)/im.width(), j/im.height());
-            m_terrain.normal( -terrainNormal(im, i+1, j) ); //maybe remove -
+            m_terrain.texcoord(float(i+1)/im.width(), float(j)/im.height());
+            m_terrain.normal( terrainNormal(im, i+1, j) ); //maybe remove -
             m_terrain.vertex( Point(i+1, 25.f * im(i + 1, j).r, j) );
 
-            m_terrain.texcoord(i/im.width(), j/im.height());
-            m_terrain.normal( -terrainNormal(im, i, j) );
+            m_terrain.texcoord(float(i)/im.width(), float(j)/im.height());
+            m_terrain.normal( terrainNormal(im, i, j) );
             m_terrain.vertex( Point(i, 25.f * im(i, j).r, j) );
         }
         m_terrain.restart_strip();
@@ -440,7 +440,7 @@ void ViewerEtudiant::draw_plane(const Transform& T)
 void ViewerEtudiant::draw_terrain(const Transform &T) {
 
     gl.alpha_texture(0.5f);
-    gl.texture(monde_texture);
+    gl.texture(m_terrainTexture);
     gl.model( T );
     gl.draw( m_terrain );
 }
@@ -505,7 +505,7 @@ int ViewerEtudiant::render()
 
     gl.camera(m_camera);
 
-    gl.debug_normals(0.5);
+    //gl.debug_normals(0.5);
     
     
     /// Appel de la fonction render() de la class Viewer
@@ -519,6 +519,7 @@ int ViewerEtudiant::render()
     Transform Z = Translation (5,0,0);
     Transform R = Translation (5,5,5);
     Transform TT=Scale(50, 50, 50);
+    Transform Terrain = Scale(0.5,0.5,0.5)*Translation(-90,-20,-90);
     
     draw_cubemap(TT);
     /// Appel des fonctions du type 'draw_votreObjet'
@@ -529,7 +530,7 @@ int ViewerEtudiant::render()
 
     //draw_plane(Translation (0,0,0));
 
-    //draw_terrain(X);
+    draw_terrain(Terrain);
     //draw_multitrees(X, m_terrainAlti);
 
     draw_plane(m_Tplane);

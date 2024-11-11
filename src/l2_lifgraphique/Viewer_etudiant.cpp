@@ -111,11 +111,11 @@ void ViewerEtudiant::init_cone()
     for (int i=0;i<=div;++i) {
         alpha = i * step; // Angle varie de 0 à 2𝝿
         //circle
-        m_cone.texcoord(i/div, 0);
+        m_cone.texcoord(float(i)/div, 0);
         m_cone.normal(Vector(cos(alpha)/sqrtf(2.f), 0, sin(alpha)/sqrtf(2.f)));
         m_cone.vertex(Point(cos(alpha), 0, sin(alpha)));
         //up
-        m_cone.texcoord(i/div, 1);
+        m_cone.texcoord(float(i)/div, 1);
         m_cone.normal(Vector(cos(alpha)/sqrtf(2.f), 1.f/sqrtf(2.f), sin(alpha)/sqrtf(2.f)));
         m_cone.vertex(Point(0, 1, 0));
     }
@@ -512,10 +512,10 @@ int ViewerEtudiant::render()
     
     draw_cubemap(TT);
     /// Appel des fonctions du type 'draw_votreObjet'
-    //draw_cube(Translation (0,0,0));
-    //draw_cone(Y);
-    //draw_cylinder(Z);
-    //draw_sphere(Translation (5,5,0));
+    draw_cube(Translation (0,0,0));
+    draw_cone(Y);
+    draw_cylinder(Z);
+    draw_sphere(Translation (5,5,0));
 
     //draw_plane(Translation (0,0,0));
 

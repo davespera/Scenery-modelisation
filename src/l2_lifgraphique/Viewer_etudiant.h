@@ -65,18 +65,6 @@ protected:
 
     Transform m_Tplane;
 
-    struct Vec {
-        float x;
-        float z;
-
-        Vec operator-(const Vec& other) const {
-        return {x - other.x, z - other.z};
-        }
-    };
-    
-    Vec V[NB];
-    
-
     /// Declaration des fonction de creation de Mesh du type init_votreObjet()
     
     void init_cube();
@@ -101,13 +89,10 @@ protected:
     void draw_sphere(const Transform & T);
     void draw_cylinder(const Transform & T);
     void draw_cone(const Transform & T);
-
     void draw_plane(const Transform & T);
-
     void draw_terrain(const Transform &T);
     void draw_tree(const Transform &T);
     void draw_multitrees(const Transform &T, const Image& im);
-
     void draw_cubemap(const Transform &T);
 };
 

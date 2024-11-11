@@ -310,6 +310,7 @@ int ViewerEtudiant::init()
     init_sphere();
     init_cylinder();
     init_disque();
+    init_cubemap();
 
     /// Chargement des textures
     math_texture = read_texture(0, "data/debug2x2red.png");
@@ -322,26 +323,14 @@ int ViewerEtudiant::init()
 
     cubemap_texture = read_texture(0, "data/cubemap/skybox.png");
 
+    //Terrain
     m_terrainTexture = read_texture(0, "data/terrain/terrain_texture.png");
-    // Image servant de carte de hauteur
-    m_terrainAlti = read_image("data/terrain/terrain.png");
+    m_terrainAlti = read_image("data/terrain/terrain.png"); // Image servant de carte de hauteur
 
     //Création du Mesh_texture
     
     init_terrain(m_terrainAlti);
-    init_cubemap();
     
-    
-    Vec V[7] = {
-        {0.0f, 0.0f},   // Point 1
-        {1.0f, 0.0f},   // Point 2
-        {2.0f, 1.0f},   // Point 3
-        {3.0f, 2.0f},   // Point 4
-        {4.0f, 1.0f},   // Point 5
-        {5.0f, 0.0f},   // Point 6
-        {6.0f, -1.0f}   // Point 7
-    };
-
     return 0;
 }
 

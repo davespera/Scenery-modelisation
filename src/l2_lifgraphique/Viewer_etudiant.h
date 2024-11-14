@@ -4,6 +4,8 @@
 
 #include "Viewer.h"
 #include <vector>
+#include "mesh.h"
+#include "wavefront.h"
 
 class ViewerEtudiant : public Viewer
 {
@@ -50,6 +52,7 @@ protected:
     Mesh m_plane_body;
     Mesh m_terrain;
     Mesh m_cubemap;
+    Mesh m_alpha;
 
     /// Declaration des Textures
     GLuint math_texture;
@@ -64,6 +67,7 @@ protected:
     Image m_terrainAlti;
 
     Transform m_Tplane;
+    Transform m_Tplanet;
 
     /// Declaration des fonction de creation de Mesh du type init_votreObjet()
 

@@ -328,6 +328,8 @@ int ViewerEtudiant::init()
     //Création du Mesh_texture
     
     init_terrain(m_terrainAlti);
+
+    m_alpha = read_mesh("data/alpha.obj");
     
     return 0;
 }
@@ -520,8 +522,9 @@ int ViewerEtudiant::render()
     Transform Z = Translation (5,0,0);
     Transform R = Translation (5,5,5);
     Transform TT = Scale(50, 50, 50);
-    Transform F = Translation (0, 30, 0) * Scale(10, 10, 10);
-    Transform S = Translation(30, 40, 0) * Scale(10, 10, 10);
+    Transform S = Translation (0, 30, 0) * Scale(10, 10, 10);
+    Transform F = Translation(30, 40, 0) * Scale(10, 10, 10);
+    Transform P = Translation(30, 30, 0);
     Transform Terrain = Scale(0.525,0.5,0.525) * Translation(-95,-20,-95);
     
     draw_cubemap(TT);
@@ -543,6 +546,10 @@ int ViewerEtudiant::render()
     draw_fire(F * Rotation(Vector(0, 1, 0), 180));
 
     draw_sun(S);
+
+    draw_sphere(m_Tplanet * P);
+
+    gl.draw(m_alpha);
     
     return 1;
     
@@ -611,6 +618,22 @@ int ViewerEtudiant::update( const float time, const float delta )
     Vector right = cross(dir, up);
     //m_Tplane = Translation(pos) * Rotation(right, 90) * Rotation(dir, 90);
     m_Tplane = Translation(pos) * Rotation(dir, 90) * Rotation(up, 90) * Rotation(right, 90) * Rotation(Vector(0, 0, 1), 180); //Check how to remove last rotation
+
+    // Calculate the circular trajectory
+    float radius = 10.0f; // Adjust the radius as needed
+    float speedFactor = 3.0f; // Adjust this factor to control the speed
+    float angle = 2.0f * M_PI * (ts / speedFactor); // Full circle over time
+
+    // Calculate the new position along the circular trajectory
+    float x = radius * cos(angle);
+    float z = radius * sin(angle);
+    Vector circular_pos = Vector(x, pos.y, z);
+
+    // Calculate the direction of movement along the circular trajectory
+    Vector circular_dir = normalize(Vector(-sin(angle), 0, cos(angle)));
+
+    // Apply the transformations: translation to the circular position and rotation to align with the direction
+    m_Tplanet = Translation(circular_pos) * Rotation(up, 90) * Rotation(Vector(0, 1, 0), angle * 180 / M_PI);
 
     return 0;
 }

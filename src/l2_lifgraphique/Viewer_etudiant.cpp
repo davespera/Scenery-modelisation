@@ -108,16 +108,16 @@ void ViewerEtudiant::init_quad_anim()
     m_quad_anim.normal( 0, 0, 1 );
 
     m_quad_anim.texcoord( 0, 0 ); // sommet 0
-    m_quad.vertex( -1, -1, 0 ); 
+    m_quad_anim.vertex( -1, -1, 0 ); 
 
-    m_quad.texcoord( 1, 0 ); // sommet 1
-    m_quad.vertex( 1, -1, 0);
+    m_quad_anim.texcoord( 1, 0 ); // sommet 1
+    m_quad_anim.vertex( 1, -1, 0);
 
-    m_quad.texcoord( 0, 1 ); // sommet 2
-    m_quad.vertex( -1, 1, 0 );
+    m_quad_anim.texcoord( 0, 1 ); // sommet 2
+    m_quad_anim.vertex( -1, 1, 0 );
 
-    m_quad.texcoord( 1, 1 ); // sommet 3
-    m_quad.vertex(1, 1, 0 );
+    m_quad_anim.texcoord( 1, 1 ); // sommet 3
+    m_quad_anim.vertex(1, 1, 0 );
 }
 
 void ViewerEtudiant::init_cone()
@@ -325,6 +325,7 @@ int ViewerEtudiant::init()
     /// Appel des fonctions init_votreObjet pour creer les Mesh
 
     init_quad();
+    init_quad_anim();
     init_cube();
     init_cone();
     init_sphere();
@@ -510,7 +511,7 @@ void ViewerEtudiant::draw_fire(const Transform &T)
 {
     gl.alpha_texture(fire_texture);
     gl.model(T);
-    gl.draw(m_quad);
+    gl.draw(m_quad_anim);
 }
 
 int ViewerEtudiant::render()
@@ -549,12 +550,13 @@ int ViewerEtudiant::render()
     //draw_plane(Translation (0,0,0));
 
     draw_terrain(Terrain);
-    draw_multitrees(X, m_terrainAlti);
+    draw_multitrees(Terrain, m_terrainAlti);
 
     draw_plane(m_Tplane);
     //draw_plane(Identity()); //shows original plane
     
     draw_fire(T);
+    draw_fire(T * Rotation(Vector(0, 1, 0), 180));
     
     return 1;
     
@@ -581,17 +583,17 @@ int ViewerEtudiant::update( const float time, const float delta )
     float texCoordEnd = (stage + 1) / 9.0f;
 
     // Update the quad with the new texture coordinates
-    m_quad.texcoord(0, texCoordStart, 0); // vertex 0
-    m_quad.vertex(-1, -1, 0);
+    m_quad_anim.texcoord(0, texCoordStart, 0); // vertex 0
+    m_quad_anim.vertex(-1, -1, 0);
 
-    m_quad.texcoord(1, texCoordEnd, 0); // vertex 1
-    m_quad.vertex(1, -1, 0);
+    m_quad_anim.texcoord(1, texCoordEnd, 0); // vertex 1
+    m_quad_anim.vertex(1, -1, 0);
 
-    m_quad.texcoord(2, texCoordStart, 1); // vertex 2
-    m_quad.vertex(-1, 1, 0);
+    m_quad_anim.texcoord(2, texCoordStart, 1); // vertex 2
+    m_quad_anim.vertex(-1, 1, 0);
 
-    m_quad.texcoord(3, texCoordEnd, 1); // vertex 3
-    m_quad.vertex(1, 1, 0);
+    m_quad_anim.texcoord(3, texCoordEnd, 1); // vertex 3
+    m_quad_anim.vertex(1, 1, 0);
 
     //Q1
     /*float angleRot = 2 * M_PI/7;

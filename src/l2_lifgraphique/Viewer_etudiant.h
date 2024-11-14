@@ -5,9 +5,6 @@
 #include "Viewer.h"
 #include <vector>
 
-#define NB 7
-
-
 class ViewerEtudiant : public Viewer
 {
 public:
@@ -43,15 +40,15 @@ protected:
     
     /// Declaration des Mesh
 
+    Mesh m_quad;
+    Mesh m_quad_anim;
     Mesh m_cube;
     Mesh m_cylinder;
     Mesh m_sphere;
     Mesh m_cone;
     Mesh m_disque;
-    Mesh m_quad;
-    Mesh m_quad_anim;
-
     Mesh m_plane_body;
+    Mesh m_terrain;
     Mesh m_cubemap;
 
     /// Declaration des Textures
@@ -61,32 +58,24 @@ protected:
     GLuint tree_texture;
     GLuint cubemap_texture;
     GLuint fire_texture;
-
-    Mesh m_terrain;
-    Image m_terrainAlti;
     GLuint m_terrainTexture;
 
+    Image m_terrainAlti;
     Transform m_Tplane;
 
     /// Declaration des fonction de creation de Mesh du type init_votreObjet()
     
+    void init_quad();
+    void init_quad_anim();
     void init_cube();
     void init_sphere();
     void init_cone();
     void init_cylinder();
     void init_disque();
-
     void init_plane_body();
-
     void init_terrain(const Image& im);
-    void init_quad();
-    void init_quad_anim();
-
     void init_cubemap();
-
-    
-
-    
+ 
     /// Declaration des fonctions draw_votreObjet(const Transform& T)
 
     void draw_cube(const Transform & T);
@@ -100,7 +89,5 @@ protected:
     void draw_cubemap(const Transform &T);
     void draw_fire(const Transform &T);
 };
-
-
 
 #endif

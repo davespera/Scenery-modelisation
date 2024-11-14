@@ -319,6 +319,7 @@ int ViewerEtudiant::init()
     tree_texture = read_texture(0, "data/billboard/arbre3.png");
     cubemap_texture = read_texture(0, "data/cubemap/skybox.png");
     fire_texture = read_texture(0, "data/fire.png");
+    sun_texture = read_texture(0, "data/sun.jpg");
 
     //Terrain
     m_terrainTexture = read_texture(0, "data/terrain/terrain_texture.png");
@@ -380,7 +381,7 @@ void ViewerEtudiant::draw_plane(const Transform& T)
 {
 
     //Plane body
-    // gl.texture(....);
+    gl.texture(math_texture);
     Transform Tpb = T * Rotation(Vector(0, 0, 1),  90) * Scale(1,4,1);
     gl.model( Tpb );
     gl.draw(m_sphere);
@@ -388,13 +389,13 @@ void ViewerEtudiant::draw_plane(const Transform& T)
     //If you stretch other axis than y you'be stretching the circles, not the triangles, which is what we want
 
     //Plane motor l
-    // gl.texture(....);
+    gl.texture(math_texture);
     Transform Tml = T * Translation(0,-0.75,-3) * Rotation(Vector(0, 0, 1),  90) * Scale (0.5, 1, 0.5);
     gl.model( Tml );
     gl.draw( m_sphere );
 
     //Plane motor r
-    // gl.texture(....);
+    gl.texture(math_texture);
     Transform Tmr = T * Translation(0,-0.75,3) * Rotation(Vector(0, 0, 1),  90) * Scale (0.5, 1, 0.5);
     gl.model( Tmr );
     gl.draw( m_sphere );
@@ -404,14 +405,14 @@ void ViewerEtudiant::draw_plane(const Transform& T)
     //matrices only serve to explain where unitary vectors (which serve as axis) are located in the default plane
 
     //Plane wings
-    // gl.texture(....);
+    gl.texture(math_texture);
     Transform Tw = T * Scale (1, 0.2, 5);
     gl.model( Tw );
     gl.draw( m_cube );
     //gl.debug_normals(1); //To debug normals
 
     //Plane aileron
-    // gl.texture(....);
+    gl.texture(math_texture);
     Transform Ta = T * Translation(2, 1, 0) * Scale(1, 1, 0.25);
     gl.model( Ta );
     gl.draw( m_cone);
@@ -460,10 +461,10 @@ void ViewerEtudiant::draw_multitrees(const Transform &T, const Image& im) {
             // Retrieve the terrain altitude at (i, j)
             float altitude = 25.f * im(i, j).r;
 
-            float treeHeightOffset = 0.5f;
+            float treeHeightOffset = 1;
 
             // Define the tree's transformation
-            Transform final_T = T * Translation(i, altitude + treeHeightOffset, j) * Scale(0.5); // Scale if trees are too large
+            Transform final_T = T * Translation(i, altitude + treeHeightOffset, j); // Scale if trees are too large
 
             // Draw the tree
             draw_tree(final_T);
@@ -490,9 +491,9 @@ void ViewerEtudiant::draw_fire(const Transform &T)
 
 void ViewerEtudiant::draw_sun(const Transform &T)
 {
-    gl.alpha_texture(fire_texture);
+    gl.alpha_texture(sun_texture);
     gl.model(T);
-    gl.draw(m_quad_anim);
+    gl.draw(m_sphere);
 }
 
 int ViewerEtudiant::render()
@@ -519,14 +520,16 @@ int ViewerEtudiant::render()
     Transform Z = Translation (5,0,0);
     Transform R = Translation (5,5,5);
     Transform TT = Scale(50, 50, 50);
-    Transform Terrain = Scale(0.525,0.5,0.525)*Translation(-95,-20,-95);
+    Transform F = Translation (0, 30, 0) * Scale(10, 10, 10);
+    Transform S = Translation(30, 40, 0) * Scale(10, 10, 10);
+    Transform Terrain = Scale(0.525,0.5,0.525) * Translation(-95,-20,-95);
     
     draw_cubemap(TT);
     /// Appel des fonctions du type 'draw_votreObjet'
-    //draw_cube(Translation (0,0,0));
-    //draw_cone(Y);
-    //draw_cylinder(Z);
-    //draw_sphere(Translation (5,5,0));
+    draw_cube(T);
+    draw_cone(Y);
+    draw_cylinder(Z);
+    draw_sphere(Translation (5,5,0));
 
     //draw_plane(Translation (0,0,0));
 
@@ -536,8 +539,10 @@ int ViewerEtudiant::render()
     draw_plane(m_Tplane);
     //draw_plane(Identity()); //shows original plane
     
-    draw_fire(T);
-    draw_fire(T * Rotation(Vector(0, 1, 0), 180));
+    draw_fire(F);
+    draw_fire(F * Rotation(Vector(0, 1, 0), 180));
+
+    draw_sun(S);
     
     return 1;
     

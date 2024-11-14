@@ -59,8 +59,10 @@ protected:
     GLuint cubemap_texture;
     GLuint fire_texture;
     GLuint m_terrainTexture;
+    GLuint sun_texture;
 
     Image m_terrainAlti;
+
     Transform m_Tplane;
 
     /// Declaration des fonction de creation de Mesh du type init_votreObjet()

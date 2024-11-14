@@ -47,39 +47,6 @@ void ViewerEtudiant::init_cube()
     }
 }
 
-/*void ViewerEtudiant::init_square() {
-    m_square = Mesh(GL_TRIANGLE_STRIP);
-
-    m_square.color(Color(1,1,1));
-    
-    // Define vertices for the square (2D plane in 3D space)
-    static float pt[4][3] = {
-        {-1, -1, 0},  // Bottom-left corner
-        {1, -1, 0},  // Bottom-right corner
-        {-1, 1, 0},  // Top-right corner
-        {1, 1, 0}   // Top-left corner
-    };
-
-    // Define texture coordinates for the square
-    static float texcoords[4][2] = {
-        {0, 0},  // Texture coordinate for bottom-left
-        {1, 0},  // Texture coordinate for bottom-right
-        {1, 1},  // Texture coordinate for top-right
-        {0, 1}   // Texture coordinate for top-left
-    };
-
-    // Normal vector for the square (facing along the positive Z-axis)
-    // Set the normal for the square
-    m_square.normal(0, 0, 1);
-    
-    // Define the vertices and corresponding texture coordinates
-    for (int i = 0; i < 4; i++) {
-        m_square.texcoord(texcoords[i][0], texcoords[i][1]);  // Add texture coordinates
-        m_square.vertex(pt[i][0], pt[i][1], pt[i][2]);
-    }
-
-}*/
-
 void ViewerEtudiant::init_quad()
 {
     m_quad = Mesh(GL_TRIANGLE_STRIP);
@@ -260,56 +227,68 @@ void ViewerEtudiant::init_terrain(const Image& im) {
     }
 }
 
-///Procedure qui initialise un cubemap
-void ViewerEtudiant::init_cubemap()
+void ViewerEtudiant::init_cubemap() 
 {
-    //Choix des primitives
-    m_cubemap=Mesh(GL_TRIANGLE_STRIP);
-    //Sommets du cube               1           2           3       4           5          6        7         8
-    static float point[8][3] = {{-1,-1,-1}, {1,-1,-1}, {1,-1,1}, {-1,-1,1}, {-1,1,-1}, {1,1,-1}, {1,1,1}, {-1,1,1}};
-    //Faces du cube
-    static int face[6][4] = {{0,1,2,3}, {5,4,7,6}, {2,1,5,6}, {0,3,7,4}, {3,2,6,7}, {1,0,4,5}};
-    //Normales des faces
-    static float normal[6][3] = {{0,-1,0}, {0,1,0}, {1,0,0}, {-1,0,0}, {0,0,1}, {0,0,-1}};
-    //Coordonees des textcoord pour chaqu'une des faces
-    static vec2 txc[6][4]={
-                            //Bas
-                            {{1/4.f,0.f},{2/4.f,0.f},{2/4.f,1/3.f},{1/4.f,1/3.f}},
+    // Set up primitive type for cubemap mesh
+    m_cubemap = Mesh(GL_TRIANGLE_STRIP);
 
-                            //Haut
-                            {{2/4.f,1.f},{1/4.f,1.f},{1/4.f,2/3.f},{2/4.f,2/3.f}},
+    // Cube vertices (corners)
+    static const float vertices[8][3] = {
+        {-1, -1, -1}, {1, -1, -1}, {1, -1, 1}, {-1, -1, 1},
+        {-1, 1, -1}, {1, 1, -1}, {1, 1, 1}, {-1, 1, 1}
+    };
+
+    // Cube faces (each face uses four vertices)
+    static const int faces[6][4] = { 
+        {0,1,3,2}, {5,4,6,7}, {2,1,6,5}, 
+        {0,3,4,7}, {3,2,7,6}, {1,0,5,4} 
+    };
+
+    // Normal vectors for each face
+    static const float normals[6][3] = {
+        {0, -1, 0}, {0, 1, 0}, {1, 0, 0}, 
+        {-1, 0, 0}, {0, 0, 1}, {0, 0, -1}
+    };
+
+    // Texture coordinates for each face
+    static const vec2 texcoords[6][4] = {
+                            //Down
+                            {{1/4.f,0.f},{2/4.f,0.f},{1/4.f,1/3.f},{2/4.f,1/3.f}},
+
+                            //Up
+                            {{2/4.f,1.f},{1/4.f,1.f},{2/4.f,2/3.f}, {1/4.f,2/3.f},},
 
                             //Right
-                            {{1/4.f,1/3.f},{3/4.f,1/3.f},{3/4.f,2/3.f},{2/4.f,2/3.f}},
+                            {{1/4.f,1/3.f},{3/4.f,1/3.f},{2/4.f,2/3.f}, {3/4.f,2/3.f}},
 
                             //Left
-                            {{0.f,1/3.f},{1/4.f,1/3.f},{1/4.f,2/3.f},{0.f,2/3.f}},
+                            {{0.f,1/3.f},{1/4.f,1/3.f},{0.f,2/3.f}, {1/4.f,2/3.f}},
 
 
                             //Front
-                            {{1/4.f,1/3.f},{2/4.f,1/3.f},{2/4.f,2/3.f},{1/4.f,2/3.f}},
+                            {{1/4.f,1/3.f},{2/4.f,1/3.f},{1/4.f,2/3.f}, {2/4.f,2/3.f}},
 
 
                             //Back
-                            {{1/4.f,1/3.f},{1.f,1/3.f},{1.f,2/3.f},{3/4.f,2/3.f}}
+                            {{1/4.f,1/3.f},{1.f,1/3.f},{3/4.f,2/3.f},{1.f,2/3.f}}
 
                             };
-    ///Maintenant on va placé la normale associé a chaqu'une des faces et les faces
-    for (int i=0; i<6; i++)
+
+    // Define each face's vertices, normals, and texture coordinates
+    for (int i = 0; i < 6; i++) 
     {
-        //Normal de la face i
-        m_cubemap.normal(normal[i][0],-1*normal[i][1], normal[i][2]);
-        //Sommets de la face i
-        m_cubemap.texcoord(txc[i][0].x,txc[i][0].y);
-        //Ici on inverse la coordonee z pour qu'on voit l'interieur du cube
-        m_cubemap.vertex(point[face[i][0]][0], point[face[i][0]][1],-point[face[i][0]][2]);
-        m_cubemap.texcoord(txc[i][1].x,txc[i][0].y);
-        m_cubemap.vertex(point[face[i][1]][0], point[face[i][1]][1], -point[face[i][1]][2]);
-        m_cubemap.texcoord(txc[i][3].x,txc[i][3].y);
-        m_cubemap.vertex(point[face[i][3]][0], point[face[i][3]][1],-point[face[i][3]][2]);
-        m_cubemap.texcoord(txc[i][2].x,txc[i][2].y);
-        m_cubemap.vertex(point[face[i][2]][0], point[face[i][2]][1], -point[face[i][2]][2]);
-        //On demande un nouveau strip
+        // Set normal for the current face
+        m_cubemap.normal(normals[i][0], -normals[i][1], normals[i][2]);
+        m_cubemap.texcoord(texcoords[i][0].x, texcoords[i][0].y);
+
+        // Define vertices and texture coordinates for the face
+        for (int j = 0; j < 4; j++) 
+        {
+            m_cubemap.texcoord(texcoords[i][j].x, texcoords[i][j].y);
+            m_cubemap.vertex(vertices[faces[i][j]][0], vertices[faces[i][j]][1], -vertices[faces[i][j]][2]);
+        }
+
+        // Start a new strip for the next face
         m_cubemap.restart_strip();
     }
 }
@@ -335,15 +314,10 @@ int ViewerEtudiant::init()
 
     /// Chargement des textures
     math_texture = read_texture(0, "data/debug2x2red.png");
-
     papillon_texture = read_texture(0, "data/papillon.png");
-
     monde_texture = read_texture(0, "data/monde.jpg");
-
     tree_texture = read_texture(0, "data/billboard/arbre3.png");
-
     cubemap_texture = read_texture(0, "data/cubemap/skybox.png");
-
     fire_texture = read_texture(0, "data/fire.png");
 
     //Terrain
@@ -514,6 +488,13 @@ void ViewerEtudiant::draw_fire(const Transform &T)
     gl.draw(m_quad_anim);
 }
 
+void ViewerEtudiant::draw_sun(const Transform &T)
+{
+    gl.alpha_texture(fire_texture);
+    gl.model(T);
+    gl.draw(m_quad_anim);
+}
+
 int ViewerEtudiant::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -537,8 +518,8 @@ int ViewerEtudiant::render()
     Transform Y = Translation(-5, 0, 0);
     Transform Z = Translation (5,0,0);
     Transform R = Translation (5,5,5);
-    Transform TT=Scale(50, 50, 50);
-    Transform Terrain = Scale(0.5,0.5,0.5)*Translation(-90,-20,-90);
+    Transform TT = Scale(50, 50, 50);
+    Transform Terrain = Scale(0.525,0.5,0.525)*Translation(-95,-20,-95);
     
     draw_cubemap(TT);
     /// Appel des fonctions du type 'draw_votreObjet'
@@ -573,10 +554,10 @@ int ViewerEtudiant::update( const float time, const float delta )
     
     float ts = time/1000.0f; // conversion en secondes
     int te = int(ts); // conversion en entier
-
+    int tf = 10 * ts;
 
     // Calculate the current stage of the fire
-    int stage = (te % 9); // There are 9 stages, so we use modulo 9
+    int stage = (tf % 9); // There are 9 stages, so we use modulo 9
 
     // Calculate the texture coordinates for the current stage
     float texCoordStart = stage / 9.0f;

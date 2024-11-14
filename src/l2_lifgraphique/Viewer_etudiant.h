@@ -40,9 +40,9 @@ protected:
     
     /// Declaration des Mesh
 
+    Mesh m_cube;
     Mesh m_quad;
     Mesh m_quad_anim;
-    Mesh m_cube;
     Mesh m_cylinder;
     Mesh m_sphere;
     Mesh m_cone;
@@ -64,10 +64,10 @@ protected:
     Transform m_Tplane;
 
     /// Declaration des fonction de creation de Mesh du type init_votreObjet()
-    
+
+    void init_cube(); 
     void init_quad();
     void init_quad_anim();
-    void init_cube();
     void init_sphere();
     void init_cone();
     void init_cylinder();
@@ -88,6 +88,7 @@ protected:
     void draw_multitrees(const Transform &T, const Image& im);
     void draw_cubemap(const Transform &T);
     void draw_fire(const Transform &T);
+    void draw_sun(const Transform &T);
 };
 
 #endif

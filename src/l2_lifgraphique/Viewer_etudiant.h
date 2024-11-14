@@ -49,15 +49,18 @@ protected:
     Mesh m_cone;
     Mesh m_disque;
     Mesh m_quad;
+    Mesh m_quad_anim;
 
     Mesh m_plane_body;
     Mesh m_cubemap;
+
     /// Declaration des Textures
     GLuint math_texture;
     GLuint papillon_texture;
     GLuint monde_texture;
     GLuint tree_texture;
     GLuint cubemap_texture;
+    GLuint fire_texture;
 
     Mesh m_terrain;
     Image m_terrainAlti;
@@ -77,6 +80,7 @@ protected:
 
     void init_terrain(const Image& im);
     void init_quad();
+    void init_quad_anim();
 
     void init_cubemap();
 
@@ -94,6 +98,7 @@ protected:
     void draw_tree(const Transform &T);
     void draw_multitrees(const Transform &T, const Image& im);
     void draw_cubemap(const Transform &T);
+    void draw_fire(const Transform &T);
 };
 
 

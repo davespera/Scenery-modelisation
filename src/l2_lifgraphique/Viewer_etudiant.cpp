@@ -87,16 +87,36 @@ void ViewerEtudiant::init_quad()
 
     m_quad.normal( 0, 0, 1 );
 
-    m_quad.texcoord( 0, 0 );
-    m_quad.vertex( -1, -1, 0 );
+    m_quad.texcoord( 0, 0 ); // sommet 0
+    m_quad.vertex( -1, -1, 0 ); 
 
-    m_quad.texcoord( 1, 0 );
+    m_quad.texcoord( 1, 0 ); // sommet 1
     m_quad.vertex( 1, -1, 0);
 
-    m_quad.texcoord( 0, 1 );
+    m_quad.texcoord( 0, 1 ); // sommet 2
     m_quad.vertex( -1, 1, 0 );
 
-    m_quad.texcoord( 1, 1 );
+    m_quad.texcoord( 1, 1 ); // sommet 3
+    m_quad.vertex(1, 1, 0 );
+}
+
+void ViewerEtudiant::init_quad_anim()
+{
+    m_quad_anim = Mesh(GL_TRIANGLE_STRIP);
+    m_quad_anim.color( Color(1, 1, 1));
+
+    m_quad_anim.normal( 0, 0, 1 );
+
+    m_quad_anim.texcoord( 0, 0 ); // sommet 0
+    m_quad.vertex( -1, -1, 0 ); 
+
+    m_quad.texcoord( 1, 0 ); // sommet 1
+    m_quad.vertex( 1, -1, 0);
+
+    m_quad.texcoord( 0, 1 ); // sommet 2
+    m_quad.vertex( -1, 1, 0 );
+
+    m_quad.texcoord( 1, 1 ); // sommet 3
     m_quad.vertex(1, 1, 0 );
 }
 
@@ -323,6 +343,8 @@ int ViewerEtudiant::init()
 
     cubemap_texture = read_texture(0, "data/cubemap/skybox.png");
 
+    fire_texture = read_texture(0, "data/fire.png");
+
     //Terrain
     m_terrainTexture = read_texture(0, "data/terrain/terrain_texture.png");
     m_terrainAlti = read_image("data/terrain/terrain.png"); // Image servant de carte de hauteur
@@ -484,6 +506,13 @@ void ViewerEtudiant::draw_cubemap(const Transform &T)
 
 }
 
+void ViewerEtudiant::draw_fire(const Transform &T)
+{
+    gl.alpha_texture(fire_texture);
+    gl.model(T);
+    gl.draw(m_quad);
+}
+
 int ViewerEtudiant::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -512,20 +541,20 @@ int ViewerEtudiant::render()
     
     draw_cubemap(TT);
     /// Appel des fonctions du type 'draw_votreObjet'
-    draw_cube(Translation (0,0,0));
-    draw_cone(Y);
-    draw_cylinder(Z);
-    draw_sphere(Translation (5,5,0));
+    //draw_cube(Translation (0,0,0));
+    //draw_cone(Y);
+    //draw_cylinder(Z);
+    //draw_sphere(Translation (5,5,0));
 
     //draw_plane(Translation (0,0,0));
 
     draw_terrain(Terrain);
-    //draw_multitrees(X, m_terrainAlti);
+    draw_multitrees(X, m_terrainAlti);
 
     draw_plane(m_Tplane);
     //draw_plane(Identity()); //shows original plane
     
-
+    draw_fire(T);
     
     return 1;
     
@@ -543,6 +572,26 @@ int ViewerEtudiant::update( const float time, const float delta )
     float ts = time/1000.0f; // conversion en secondes
     int te = int(ts); // conversion en entier
 
+
+    // Calculate the current stage of the fire
+    int stage = (te % 9); // There are 9 stages, so we use modulo 9
+
+    // Calculate the texture coordinates for the current stage
+    float texCoordStart = stage / 9.0f;
+    float texCoordEnd = (stage + 1) / 9.0f;
+
+    // Update the quad with the new texture coordinates
+    m_quad.texcoord(0, texCoordStart, 0); // vertex 0
+    m_quad.vertex(-1, -1, 0);
+
+    m_quad.texcoord(1, texCoordEnd, 0); // vertex 1
+    m_quad.vertex(1, -1, 0);
+
+    m_quad.texcoord(2, texCoordStart, 1); // vertex 2
+    m_quad.vertex(-1, 1, 0);
+
+    m_quad.texcoord(3, texCoordEnd, 1); // vertex 3
+    m_quad.vertex(1, 1, 0);
 
     //Q1
     /*float angleRot = 2 * M_PI/7;

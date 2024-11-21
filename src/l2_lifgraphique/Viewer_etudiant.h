@@ -63,6 +63,7 @@ protected:
     GLuint fire_texture;
     GLuint m_terrainTexture;
     GLuint sun_texture;
+    GLuint sea_texture;
 
     Image m_terrainAlti;
 
@@ -95,6 +96,7 @@ protected:
     void draw_cubemap(const Transform &T);
     void draw_fire(const Transform &T);
     void draw_sun(const Transform &T);
+    void draw_sea(const Transform &T);
 };
 
 #endif

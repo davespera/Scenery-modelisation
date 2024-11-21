@@ -320,6 +320,7 @@ int ViewerEtudiant::init()
     cubemap_texture = read_texture(0, "data/cubemap/skybox.png");
     fire_texture = read_texture(0, "data/fire.png");
     sun_texture = read_texture(0, "data/sun.jpg");
+    sea_texture = read_texture(0, "data/cubemap/cubemap_opensea/opensea_negy.png");
 
     //Terrain
     m_terrainTexture = read_texture(0, "data/terrain/terrain_texture.png");
@@ -498,6 +499,13 @@ void ViewerEtudiant::draw_sun(const Transform &T)
     gl.draw(m_sphere);
 }
 
+void ViewerEtudiant::draw_sea(const Transform &T)
+{
+    gl.alpha_texture(sea_texture);
+    gl.model(T);
+    gl.draw(m_quad);
+}
+
 int ViewerEtudiant::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -521,13 +529,17 @@ int ViewerEtudiant::render()
     Transform Y = Translation(-5, 0, 0);
     Transform Z = Translation (5,0,0);
     Transform R = Translation (5,5,5);
-    Transform TT = Scale(50, 50, 50);
+    Transform Cubemap = Scale(50, 50, 50);
     Transform S = Translation (0, 30, 0) * Scale(10, 10, 10);
-    Transform F = Translation(30, 40, 0) * Scale(10, 10, 10);
+    Transform F = Translation(30, 20, 0) * Scale(10, 10, 10);
     Transform P = Translation(30, 30, 0);
     Transform Terrain = Scale(0.525,0.5,0.525) * Translation(-95,-20,-95);
+    Transform Sea = Translation(0, -8, 0) * Scale(50, 50, 50) * Rotation(Vector(1, 0, 0), -90);
     
-    draw_cubemap(TT);
+    gl.model(Identity());
+    gl.draw(m_alpha);
+
+    draw_cubemap(Cubemap);
     /// Appel des fonctions du type 'draw_votreObjet'
     draw_cube(T);
     draw_cone(Y);
@@ -549,7 +561,9 @@ int ViewerEtudiant::render()
 
     draw_sphere(m_Tplanet * P);
 
-    gl.draw(m_alpha);
+    draw_sea(Sea);
+
+   
     
     return 1;
     

@@ -55,6 +55,7 @@ protected:
     Mesh m_alpha;
 
     /// Declaration des Textures
+
     GLuint math_texture;
     GLuint papillon_texture;
     GLuint monde_texture;
@@ -65,12 +66,15 @@ protected:
     GLuint sun_texture;
     GLuint sea_texture;
 
+    /// Carte d'hauteur
+
     Image m_terrainAlti;
 
+    // Transformations pour les animations
     Transform m_Tplane;
     Transform m_Tplanet;
 
-    /// Declaration des fonction de creation de Mesh du type init_votreObjet()
+    /// Déclaration des fonction de creation de Mesh du type init_votreObjet()
 
     void init_cube(); 
     void init_quad();
@@ -83,7 +87,7 @@ protected:
     void init_terrain(const Image& im);
     void init_cubemap();
  
-    /// Declaration des fonctions draw_votreObjet(const Transform& T)
+    /// Déclaration des fonctions draw_votreObjet(const Transform& T)
 
     void draw_cube(const Transform & T);
     void draw_sphere(const Transform & T);

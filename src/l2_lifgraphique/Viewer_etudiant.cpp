@@ -16,11 +16,16 @@ using namespace std;
  */
 void ViewerEtudiant::init_cube()
 {
-
+    // Définition du mesh
     m_cube = Mesh(GL_TRIANGLE_STRIP);
+
+    // Sommets du cube
     static float pt[8][3] = { {-1,-1,-1}, {1,-1,-1}, {1,-1,1}, {-1,-1,1}, {-1,1,-1}, {1,1,-1}, {1,1,1}, {-1,1,1} };
+    // Faces du cube
     static int f[6][4] = { {0,1,3,2}, {5,4,6,7}, {2,1,6,5}, {0,3,4,7}, {3,2,7,6}, {1,0,5,4} };
+    // Normales des faces
     static float n[6][3] = { {0,-1,0}, {0,1,0}, {1,0,0}, {-1,0,0}, {0,0,1}, {0,0,-1} };
+    // Coordonnées de texture par vertex
     static float texcoords[8][2] = {
         {0.0f, 0.0f}, // Vertex 0
         {1.0f, 0.0f}, // Vertex 1
@@ -34,9 +39,9 @@ void ViewerEtudiant::init_cube()
 
     for (int i=0; i<6; i++) // i = numéro de la face
     {
-        // La normale à la face
+        // La normale à la face i
         m_cube.normal(n[i][0], n[i][1], n[i][2]);
-        // Les 4 sommets de la face
+        // Les 4 sommets de la face et ses coordonnées de texture
         for (int j=0; j<4; j++) {
             int vertexIndex = f[i][j];
             
@@ -93,15 +98,17 @@ void ViewerEtudiant::init_cone()
     const int div = 25;
     float alpha;
     float step = 2.0 * M_PI / (div);
+
     // Choix de la primitive OpenGL
     m_cone = Mesh(GL_TRIANGLE_STRIP);
+
     for (int i=0;i<=div;++i) {
         alpha = i * step; // Angle varie de 0 à 2𝝿
-        //circle
+        // Circle en bas
         m_cone.texcoord(float(i)/div, 0);
         m_cone.normal(Vector(cos(alpha)/sqrtf(2.f), 0, sin(alpha)/sqrtf(2.f)));
         m_cone.vertex(Point(cos(alpha), 0, sin(alpha)));
-        //up
+        // Point du cône
         m_cone.texcoord(float(i)/div, 1);
         m_cone.normal(Vector(cos(alpha)/sqrtf(2.f), 1.f/sqrtf(2.f), sin(alpha)/sqrtf(2.f)));
         m_cone.vertex(Point(0, 1, 0));
@@ -154,32 +161,33 @@ void ViewerEtudiant::init_sphere()
             m_sphere.vertex( Point(cos(alpha2) * cos(beta), sin(alpha2), cos(alpha2) * sin(beta)) );
             } // boucle sur les j, angle beta, dessin des sommets d’un cercle
         m_sphere.restart_strip(); // Demande un nouveau strip
-    } // boucle sur les i, angle alpha, sphère = superposition de cercles
+    } // Boucle sur les i, angle alpha, sphère = superposition de cercles
 }
 
 
 void ViewerEtudiant::init_cylinder()
 {
-    const int div = 25;  // Number of divisions for the cylinder
-    float alpha;         // Angle in radians
-    float step = 2.0f * M_PI / div; // Step size for each division in radians
+    const int div = 25;  // Nombre des divisions du cylindre
+    float alpha;         // Angle en radians
+    float step = 2.0f * M_PI / div; // Pas pour chaque division en radians
 
-    // Initialize the mesh for the cylinder, starting with the side
+    // Choix des primitives
     m_cylinder = Mesh(GL_TRIANGLE_STRIP);
     
     // Create the side surface of the cylinder
     for (int i = 0; i <= div; ++i)
     {
+        // Variation de l'angle de 0 à 2𝝿
         alpha = i * step;
         
-        // Normal vector for smooth shading
+        // Vecteur normal
         Vector normal(cos(alpha), 0, sin(alpha));
         
-        // Add bottom and top vertices at this angle
+        // Disque du bas
         m_cylinder.texcoord(float(i)/div, 0);
         m_cylinder.normal(normal);
         m_cylinder.vertex(Point(cos(alpha), -1, sin(alpha)));
-        
+        // Disque du haut
         m_cylinder.texcoord(float(i)/div, 1);
         m_cylinder.normal(normal);
         m_cylinder.vertex(Point(cos(alpha), 1, sin(alpha)));
@@ -209,86 +217,87 @@ Vector terrainNormal(const Image& im, const int i, const int j) {
 }
 
 void ViewerEtudiant::init_terrain(const Image& im) {
-    
+
+    // Choix des primitives
     m_terrain = Mesh(GL_TRIANGLE_STRIP); 
 
+
+    // Parcour de la largeur et longueur de l'image pour placer les normales et les vertex
     for(int i=1; i<im.width()-2; ++i) {
         for(int j=1; j<im.height()-1; ++j) {
 
             m_terrain.texcoord(float(i+1)/im.width(), float(j)/im.height());
-            m_terrain.normal( terrainNormal(im, i+1, j) ); //maybe remove -
+            m_terrain.normal( terrainNormal(im, i+1, j) );
             m_terrain.vertex( Point(i+1, 25.f * im(i + 1, j).r, j) );
 
             m_terrain.texcoord(float(i)/im.width(), float(j)/im.height());
             m_terrain.normal( terrainNormal(im, i, j) );
             m_terrain.vertex( Point(i, 25.f * im(i, j).r, j) );
         }
+        // On demande un nouveau strip après chaque itération
         m_terrain.restart_strip();
     }
 }
 
 void ViewerEtudiant::init_cubemap() 
 {
-    // Set up primitive type for cubemap mesh
+    // Choix de primitives
     m_cubemap = Mesh(GL_TRIANGLE_STRIP);
 
-    // Cube vertices (corners)
+    // Vertex du cube
     static const float vertices[8][3] = {
         {-1, -1, -1}, {1, -1, -1}, {1, -1, 1}, {-1, -1, 1},
         {-1, 1, -1}, {1, 1, -1}, {1, 1, 1}, {-1, 1, 1}
     };
 
-    // Cube faces (each face uses four vertices)
+    // Faces du cube
     static const int faces[6][4] = { 
         {0,1,3,2}, {5,4,6,7}, {2,1,6,5}, 
         {0,3,4,7}, {3,2,7,6}, {1,0,5,4} 
     };
 
-    // Normal vectors for each face
+    // Vecteurs normals de chaque face
     static const float normals[6][3] = {
         {0, -1, 0}, {0, 1, 0}, {1, 0, 0}, 
         {-1, 0, 0}, {0, 0, 1}, {0, 0, -1}
     };
 
-    // Texture coordinates for each face
+    // Coordonnées de texture de chaque face
     static const vec2 texcoords[6][4] = {
-                            //Down
+                            // Bas
                             {{1/4.f,0.f},{2/4.f,0.f},{1/4.f,1/3.f},{2/4.f,1/3.f}},
 
-                            //Up
+                            // Haut
                             {{2/4.f,1.f},{1/4.f,1.f},{2/4.f,2/3.f}, {1/4.f,2/3.f},},
 
-                            //Right
+                            // Droite
                             {{1/4.f,1/3.f},{3/4.f,1/3.f},{2/4.f,2/3.f}, {3/4.f,2/3.f}},
 
-                            //Left
+                            // Gauche
                             {{0.f,1/3.f},{1/4.f,1/3.f},{0.f,2/3.f}, {1/4.f,2/3.f}},
 
-
-                            //Front
+                            // Front
                             {{1/4.f,1/3.f},{2/4.f,1/3.f},{1/4.f,2/3.f}, {2/4.f,2/3.f}},
 
-
-                            //Back
+                            // Arrière
                             {{1/4.f,1/3.f},{1.f,1/3.f},{3/4.f,2/3.f},{1.f,2/3.f}}
-
                             };
 
-    // Define each face's vertices, normals, and texture coordinates
+    // Définir vertex, normals et coordonnées de texture de chaque face
     for (int i = 0; i < 6; i++) 
     {
-        // Set normal for the current face
+        // Normal de la face
         m_cubemap.normal(normals[i][0], -normals[i][1], normals[i][2]);
         m_cubemap.texcoord(texcoords[i][0].x, texcoords[i][0].y);
 
-        // Define vertices and texture coordinates for the face
+        // Vertex et coordonnées de texture de la face
         for (int j = 0; j < 4; j++) 
         {
             m_cubemap.texcoord(texcoords[i][j].x, texcoords[i][j].y);
             m_cubemap.vertex(vertices[faces[i][j]][0], vertices[faces[i][j]][1], -vertices[faces[i][j]][2]);
         }
 
-        // Start a new strip for the next face
+        // On demande un nouveau strip après chaque itération
         m_cubemap.restart_strip();
     }
 }
@@ -300,9 +309,7 @@ int ViewerEtudiant::init()
     
     m_camera.lookat( Point(0,0,0), 150 );
     
-    
     /// Appel des fonctions init_votreObjet pour creer les Mesh
-
     init_quad();
     init_quad_anim();
     init_cube();
@@ -327,9 +334,9 @@ int ViewerEtudiant::init()
     m_terrainAlti = read_image("data/terrain/terrain.png"); // Image servant de carte de hauteur
 
     //Création du Mesh_texture
-    
     init_terrain(m_terrainAlti);
 
+    // Chargement direct des maillages
     m_alpha = read_mesh("data/alpha.obj");
     
     return 0;
@@ -352,6 +359,7 @@ void ViewerEtudiant::draw_cone(const Transform& T)
     gl.texture(monde_texture);
     gl.model( T );
     gl.draw( m_cone);
+
     Transform Tch = T * Translation( 0, 0, 0);
     gl.model( Tch );
     gl.draw( m_disque);
@@ -383,7 +391,7 @@ void ViewerEtudiant::draw_cylinder(const Transform& T)
 void ViewerEtudiant::draw_plane(const Transform& T)
 {
 
-    //Plane body
+    // Corps de l'avion
     gl.texture(math_texture);
     Transform Tpb = T * Rotation(Vector(0, 0, 1),  90) * Scale(1,4,1);
     gl.model( Tpb );
@@ -391,13 +399,13 @@ void ViewerEtudiant::draw_plane(const Transform& T)
     //Has to be rotated because sphere is built with circles created along the y axis connected with triangles
     //If you stretch other axis than y you'be stretching the circles, not the triangles, which is what we want
 
-    //Plane motor l
+    // Moteur gauche
     gl.texture(math_texture);
     Transform Tml = T * Translation(0,-0.75,-3) * Rotation(Vector(0, 0, 1),  90) * Scale (0.5, 1, 0.5);
     gl.model( Tml );
     gl.draw( m_sphere );
 
-    //Plane motor r
+    // Moteur droit
     gl.texture(math_texture);
     Transform Tmr = T * Translation(0,-0.75,3) * Rotation(Vector(0, 0, 1),  90) * Scale (0.5, 1, 0.5);
     gl.model( Tmr );
@@ -407,14 +415,13 @@ void ViewerEtudiant::draw_plane(const Transform& T)
     //according to the default xyz axis, not the rotated ones, since all operations are done in the same plane,
     //matrices only serve to explain where unitary vectors (which serve as axis) are located in the default plane
 
-    //Plane wings
+    // Ailes
     gl.texture(math_texture);
     Transform Tw = T * Scale (1, 0.2, 5);
     gl.model( Tw );
     gl.draw( m_cube );
-    //gl.debug_normals(1); //To debug normals
 
-    //Plane aileron
+    // Aileron
     gl.texture(math_texture);
     Transform Ta = T * Translation(2, 1, 0) * Scale(1, 1, 0.25);
     gl.model( Ta );
@@ -456,26 +463,27 @@ void ViewerEtudiant::draw_tree(const Transform &T) {
 }
 
 void ViewerEtudiant::draw_multitrees(const Transform &T, const Image& im) {
-    // Define the frequency or positions for trees
-    int treeSpacing = 10; // Adjust spacing as needed
+    // Définir fréquence et position des arbres
+    int treeSpacing = 10;
 
     for (int i = treeSpacing; i < im.width(); i += treeSpacing) {
         for (int j = treeSpacing; j < im.height(); j += treeSpacing) {
-            // Retrieve the terrain altitude at (i, j)
+            // Obtenir l'altitude du terrain à (i, j)
             float altitude = 25.f * im(i, j).r;
 
+            // On tient en compte l'hauteur total de l'arbre
             float treeHeightOffset = 1;
 
-            // Define the tree's transformation
+            // Définit la transformation finale de l'arbre
             Transform final_T = T * Translation(i, altitude + treeHeightOffset, j); // Scale if trees are too large
 
-            // Draw the tree
+            // Afficher l'arbre
             draw_tree(final_T);
         }
     }
 }
 
-///Procedure pour dessiner le cube-map
+///Procédure pour dessiner le cubemap
 void ViewerEtudiant::draw_cubemap(const Transform &T)
 {
     gl.alpha_texture(0.5f);
@@ -485,6 +493,7 @@ void ViewerEtudiant::draw_cubemap(const Transform &T)
 
 }
 
+// Texture qui sera animée
 void ViewerEtudiant::draw_fire(const Transform &T)
 {
     gl.alpha_texture(fire_texture);
@@ -524,27 +533,30 @@ int ViewerEtudiant::render()
     /// a supprimer ensuite
     //Viewer::render();
 
-    Transform T = Translation (0,0,0);
-    Transform X = Translation (0,0,0) * Scale(0.25, 0.25, 0.25);
-    Transform Y = Translation(-5, 0, 0);
-    Transform Z = Translation (5,0,0);
-    Transform R = Translation (5,5,5);
+    // Transformations
+
+    Transform T = Translation(0, 0, 0);
+    Transform Cube = Translation (0, 0, -5);
+    Transform Cone = Translation(-5, 0, 0);
+    Transform Cylindre = Translation (5, 0, 0);
+    Transform Sphere = Translation(5, 5, 0);
     Transform Cubemap = Scale(50, 50, 50);
     Transform S = Translation (0, 30, 0) * Scale(10, 10, 10);
     Transform F = Translation(30, 20, 0) * Scale(10, 10, 10);
-    Transform P = Translation(30, 30, 0);
+    Transform P = Translation(30, 20, 0);
     Transform Terrain = Scale(0.525,0.5,0.525) * Translation(-95,-20,-95);
     Transform Sea = Translation(0, -8, 0) * Scale(50, 50, 50) * Rotation(Vector(1, 0, 0), -90);
     
+    // Maillage direct
     gl.model(Identity());
     gl.draw(m_alpha);
 
     draw_cubemap(Cubemap);
     /// Appel des fonctions du type 'draw_votreObjet'
-    draw_cube(T);
-    draw_cone(Y);
-    draw_cylinder(Z);
-    draw_sphere(Translation (5,5,0));
+    draw_cube(Cube);
+    draw_cone(Cone);
+    draw_cylinder(Cylindre);
+    draw_sphere(Sphere);
 
     //draw_plane(Translation (0,0,0));
 
@@ -554,7 +566,9 @@ int ViewerEtudiant::render()
     draw_plane(m_Tplane);
     //draw_plane(Identity()); //shows original plane
     
+    // Texture animée
     draw_fire(F);
+    // Pour que l'animation apparaisse par les deux côtés
     draw_fire(F * Rotation(Vector(0, 1, 0), 180));
 
     draw_sun(S);
@@ -630,23 +644,19 @@ int ViewerEtudiant::update( const float time, const float delta )
     Vector dir = normalize(pos_suiv - pos);
     Vector up(0, 1, 0);
     Vector right = cross(dir, up);
-    //m_Tplane = Translation(pos) * Rotation(right, 90) * Rotation(dir, 90);
-    m_Tplane = Translation(pos) * Rotation(dir, 90) * Rotation(up, 90) * Rotation(right, 90) * Rotation(Vector(0, 0, 1), 180); //Check how to remove last rotation
 
-    // Calculate the circular trajectory
-    float radius = 10.0f; // Adjust the radius as needed
-    float speedFactor = 3.0f; // Adjust this factor to control the speed
-    float angle = 2.0f * M_PI * (ts / speedFactor); // Full circle over time
+    m_Tplane = Translation(pos) * Rotation(dir, 90) * Rotation(up, 90) * Rotation(right, 90) * Rotation(Vector(0, 0, 1), 180);
+    // Calculer la trajectoire circulaire
+    float radius = 10.0f; 
+    float speedFactor = 3.0f; // Ajuster pour contrôler la vitesse
+    float angle = 2.0f * M_PI * (ts / speedFactor); // Circle complet
 
-    // Calculate the new position along the circular trajectory
+    // Calculer la nouvelle position au long de la trajectoire
     float x = radius * cos(angle);
     float z = radius * sin(angle);
     Vector circular_pos = Vector(x, pos.y, z);
 
-    // Calculate the direction of movement along the circular trajectory
-    Vector circular_dir = normalize(Vector(-sin(angle), 0, cos(angle)));
-
-    // Apply the transformations: translation to the circular position and rotation to align with the direction
+    // Appliquer les transformations : translation vers la position circulaire et rotation pour s'aligner avec la direction
     m_Tplanet = Translation(circular_pos) * Rotation(up, 90) * Rotation(Vector(0, 1, 0), angle * 180 / M_PI);
 
     return 0;

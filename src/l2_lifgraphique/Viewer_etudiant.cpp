@@ -677,10 +677,10 @@ int ViewerEtudiant::update( const float time, const float delta )
     // Calculer la nouvelle position au long de la trajectoire
     float x = radius * cos(angle);
     float z = radius * sin(angle);
-    Vector circular_pos = Vector(x, pos.y, z);
-
+    Vector planet_pos = Vector(x, pos.y, z);
+    
     // Appliquer les transformations : translation vers la position circulaire et rotation pour s'aligner avec la direction
-    m_Tplanet = Translation(circular_pos) * Rotation(up, 90) * Rotation(Vector(0, 1, 0), angle * 180 / M_PI);
+    m_Tplanet = Translation(planet_pos) * Rotation(up, 90) * Rotation(Vector(0, 1, 0), angle * 180 / M_PI);
 
     return 0;
 }

@@ -52,6 +52,7 @@ void ViewerEtudiant::init_cube()
     }
 }
 
+// Fonction pour initialiser un carré
 void ViewerEtudiant::init_quad()
 {
     m_quad = Mesh(GL_TRIANGLE_STRIP);
@@ -72,6 +73,7 @@ void ViewerEtudiant::init_quad()
     m_quad.vertex(1, 1, 0 );
 }
 
+// Fonction pour initialiser un carré animé
 void ViewerEtudiant::init_quad_anim()
 {
     m_quad_anim = Mesh(GL_TRIANGLE_STRIP);
@@ -92,6 +94,7 @@ void ViewerEtudiant::init_quad_anim()
     m_quad_anim.vertex(1, 1, 0 );
 }
 
+// Fonction pour initialiser le cone
 void ViewerEtudiant::init_cone()
 {
     // Variation de l’angle de 0 à 2𝝿
@@ -115,6 +118,7 @@ void ViewerEtudiant::init_cone()
     }
 }
 
+// Fonction pour initialiser le disque
 void ViewerEtudiant::init_disque()
 {
     // Variation de l’angle de 0 à 2𝝿
@@ -134,6 +138,7 @@ void ViewerEtudiant::init_disque()
     }
 }
 
+// Fonction pour initialiser la sphère
 void ViewerEtudiant::init_sphere()
 {
     // Variation des angles alpha et beta
@@ -164,7 +169,7 @@ void ViewerEtudiant::init_sphere()
     } // Boucle sur les i, angle alpha, sphère = superposition de cercles
 }
 
-
+// Fonction pour initialiser le cylindre
 void ViewerEtudiant::init_cylinder()
 {
     const int div = 25;  // Nombre des divisions du cylindre
@@ -195,6 +200,7 @@ void ViewerEtudiant::init_cylinder()
 
 }
 
+// Fonction pour calculer la normale au point (i, j) de l'image
 Vector terrainNormal(const Image& im, const int i, const int j) {
 
     //Calcul de la normale au point (i, j) de l'image
@@ -216,6 +222,7 @@ Vector terrainNormal(const Image& im, const int i, const int j) {
     return n;
 }
 
+// Fonction pour initialiser le terrain
 void ViewerEtudiant::init_terrain(const Image& im) {
 
     // Choix des primitives
@@ -239,6 +246,7 @@ void ViewerEtudiant::init_terrain(const Image& im) {
     }
 }
 
+// Fonction pour initialiser le cubemap
 void ViewerEtudiant::init_cubemap() 
 {
     // Choix de primitives
@@ -354,6 +362,7 @@ void ViewerEtudiant::draw_cube(const Transform& T)
 
 }
 
+// Fonction pour dessiner le cone
 void ViewerEtudiant::draw_cone(const Transform& T)
 {
     gl.texture(monde_texture);
@@ -365,6 +374,7 @@ void ViewerEtudiant::draw_cone(const Transform& T)
     gl.draw( m_disque);
 }
 
+// Fonction pour dessiner la sphère
 void ViewerEtudiant::draw_sphere(const Transform& T)
 {
     gl.texture(monde_texture);
@@ -372,6 +382,7 @@ void ViewerEtudiant::draw_sphere(const Transform& T)
     gl.draw( m_sphere);
 }
 
+// Fonction pour dessiner le cylindre
 void ViewerEtudiant::draw_cylinder(const Transform& T)
 {
     gl.texture(monde_texture);
@@ -388,6 +399,7 @@ void ViewerEtudiant::draw_cylinder(const Transform& T)
     gl.draw( m_disque);
 }
 
+// Fonction pour dessiner l'avion
 void ViewerEtudiant::draw_plane(const Transform& T)
 {
 
@@ -423,7 +435,7 @@ void ViewerEtudiant::draw_plane(const Transform& T)
 
     // Aileron
     gl.texture(math_texture);
-    Transform Ta = T * Translation(2, 1, 0) * Scale(1, 1, 0.25);
+    Transform Ta = T * Translation(2, 0.75, 0) * Scale(1, 1, 0.25) * Rotation(Vector(0, 0, 1), -10);
     gl.model( Ta );
     gl.draw( m_cone);
     Transform Tch = T * Translation( 2, 1, 0) * Scale (1, 1, 0.25);
@@ -434,6 +446,8 @@ void ViewerEtudiant::draw_plane(const Transform& T)
 /*
  * Fonction dans laquelle les appels pour les affichages sont effectues.
  */
+
+// Fonction pour dessiner le terrain
 void ViewerEtudiant::draw_terrain(const Transform &T) {
 
     gl.alpha_texture(0.5f);
@@ -442,9 +456,10 @@ void ViewerEtudiant::draw_terrain(const Transform &T) {
     gl.draw( m_terrain );
 }
 
+// Fonction pour dessiner un billboard
 void ViewerEtudiant::draw_tree(const Transform &T) {
 
-    gl.alpha_texture(tree_texture); //maybe like this gl.alpha_texture(tree_texture, 0.8);
+    gl.alpha_texture(tree_texture);
     //by default 0.5
     gl.model( T );
     gl.draw( m_quad );
@@ -462,6 +477,7 @@ void ViewerEtudiant::draw_tree(const Transform &T) {
     gl.draw( m_quad );
 }
 
+// Fonction pour dessiner plusieurs billboards selon l'hauteur du terrain
 void ViewerEtudiant::draw_multitrees(const Transform &T, const Image& im) {
     // Définir fréquence et position des arbres
     int treeSpacing = 10;
@@ -475,7 +491,7 @@ void ViewerEtudiant::draw_multitrees(const Transform &T, const Image& im) {
             float treeHeightOffset = 1;
 
             // Définit la transformation finale de l'arbre
-            Transform final_T = T * Translation(i, altitude + treeHeightOffset, j); // Scale if trees are too large
+            Transform final_T = T * Translation(i, altitude + treeHeightOffset, j);
 
             // Afficher l'arbre
             draw_tree(final_T);
@@ -486,6 +502,7 @@ void ViewerEtudiant::draw_multitrees(const Transform &T, const Image& im) {
 ///Procédure pour dessiner le cubemap
 void ViewerEtudiant::draw_cubemap(const Transform &T)
 {
+    // Définir transparence de la texture
     gl.alpha_texture(0.5f);
     gl.model(T);
     gl.texture(cubemap_texture);
@@ -577,8 +594,6 @@ int ViewerEtudiant::render()
 
     draw_sea(Sea);
 
-   
-    
     return 1;
     
 }
@@ -596,14 +611,15 @@ int ViewerEtudiant::update( const float time, const float delta )
     int te = int(ts); // conversion en entier
     int tf = 10 * ts;
 
-    // Calculate the current stage of the fire
-    int stage = (tf % 9); // There are 9 stages, so we use modulo 9
+    // Feu
+    // Calculer la phase actuelle du feu
+    int stage = (tf % 9); // Modulo 9 pour 9 phases
 
-    // Calculate the texture coordinates for the current stage
+    // Calculer les coordonnées de texture pour la phase actuelle
     float texCoordStart = stage / 9.0f;
     float texCoordEnd = (stage + 1) / 9.0f;
 
-    // Update the quad with the new texture coordinates
+    // Actualiser le carré avec les textures actuelles
     m_quad_anim.texcoord(0, texCoordStart, 0); // vertex 0
     m_quad_anim.vertex(-1, -1, 0);
 
@@ -615,6 +631,8 @@ int ViewerEtudiant::update( const float time, const float delta )
 
     m_quad_anim.texcoord(3, texCoordEnd, 1); // vertex 3
     m_quad_anim.vertex(1, 1, 0);
+
+    // Avion
 
     //Q1
     /*float angleRot = 2 * M_PI/7;
@@ -629,7 +647,7 @@ int ViewerEtudiant::update( const float time, const float delta )
     Vector pos = Vector(po) + poids * (Vector(p1) - Vector(po));
     m_Tplane = Translation(pos); //Objet mis à la position pos*/
 
-    //Q3
+    // Q3, avion
     int ite = te /m_anim.nb_points();
     float poids = ts -te;
     int ite_suiv = (ite + 1) % m_anim.nb_points();
@@ -638,6 +656,8 @@ int ViewerEtudiant::update( const float time, const float delta )
     Point p0 = m_anim[ite];
     Point p1 = m_anim[ite_suiv];
     Point p2 = m_anim[ite_suiv2];
+
+    // On calcule les positions avec l'interpolation
     Vector pos = Vector(p0) + poids * (Vector(p1) - Vector(p0));
     Vector pos_suiv = Vector(p1) + poids * (Vector(p2) - Vector(p1));
 
@@ -645,8 +665,11 @@ int ViewerEtudiant::update( const float time, const float delta )
     Vector up(0, 1, 0);
     Vector right = cross(dir, up);
 
+    // On calcule la position finale
     m_Tplane = Translation(pos) * Rotation(dir, 90) * Rotation(up, 90) * Rotation(right, 90) * Rotation(Vector(0, 0, 1), 180);
-    // Calculer la trajectoire circulaire
+
+    // Planète
+    // Calculer la trajectoire circulaire de la planète
     float radius = 10.0f; 
     float speedFactor = 3.0f; // Ajuster pour contrôler la vitesse
     float angle = 2.0f * M_PI * (ts / speedFactor); // Circle complet

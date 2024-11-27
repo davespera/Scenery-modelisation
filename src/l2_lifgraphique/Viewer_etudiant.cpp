@@ -344,7 +344,7 @@ int ViewerEtudiant::init()
     //Création du Mesh_texture
     init_terrain(m_terrainAlti);
 
-    // Chargement direct des maillages
+    // Chargement direct des maillages dans la fonction init
     m_alpha = read_mesh("data/alpha.obj");
     
     return 0;
@@ -518,6 +518,7 @@ void ViewerEtudiant::draw_fire(const Transform &T)
     gl.draw(m_quad_anim);
 }
 
+// Fonction pour dessiner le soleil
 void ViewerEtudiant::draw_sun(const Transform &T)
 {
     gl.alpha_texture(sun_texture);
@@ -525,6 +526,7 @@ void ViewerEtudiant::draw_sun(const Transform &T)
     gl.draw(m_sphere);
 }
 
+// Fonction pour dessiner un lac
 void ViewerEtudiant::draw_sea(const Transform &T)
 {
     gl.alpha_texture(sea_texture);
@@ -564,7 +566,7 @@ int ViewerEtudiant::render()
     Transform Terrain = Scale(0.525,0.5,0.525) * Translation(-95,-20,-95);
     Transform Sea = Translation(0, -8, 0) * Scale(50, 50, 50) * Rotation(Vector(1, 0, 0), -90);
     
-    // Maillage direct
+    // Maillage direct, dans la fonction render
     gl.model(Identity());
     gl.draw(m_alpha);
 

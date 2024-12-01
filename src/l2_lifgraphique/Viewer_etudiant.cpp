@@ -438,7 +438,7 @@ void ViewerEtudiant::draw_plane(const Transform& T)
     Transform Ta = T * Translation(2, 0.75, 0) * Scale(1, 1, 0.25) * Rotation(Vector(0, 0, 1), -10);
     gl.model( Ta );
     gl.draw( m_cone);
-    Transform Tch = T * Translation( 2, 1, 0) * Scale (1, 1, 0.25);
+    Transform Tch = T * Translation( 2, 1, 0) * Scale (1, 1, 0.25) * Rotation(Vector(0, 0, 1), -10);
     gl.model( Tch );
     gl.draw( m_disque);
 }
